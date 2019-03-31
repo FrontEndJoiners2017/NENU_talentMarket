@@ -1,6 +1,12 @@
 <template>
 <el-menu :default-openeds="['1','2']">
-    <p>NENU_Monkey</p>
+    <router-link to='DFU'>
+        <div id="logoBox">
+            <h1>东北师范大学</h1>
+            <h1>就业市场数据</h1>
+            <h1>分析系统</h1>
+        </div>
+    </router-link>
     <el-submenu index="1">
         <template slot="title"><!-- 标题 -->
             <i class="el-icon-star-on"></i><!-- 标题图标 -->
@@ -61,9 +67,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-p{
+#logoBox{
     background-color: #409EFF;
     color: #FFFFFF;
-    margin: 0;
+    padding: 30px 0;
+}
+#logoBox h1{
+    margin: 5px 0;
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
-    <div class="bg">
-      <p>
+    <el-card class="box-card">
+      <!-- <p> -->
         Welcome, {{ UserName }}.This is header area.
         <el-button type="danger" icon="el-icon-close" circle></el-button>
-      </p>
-    </div>
+      <!-- </p> -->
+    </el-card>
 </template>
 <script>
 export default {
@@ -15,14 +15,6 @@ export default {
   }
 }
 </script>
-<style>
-.bg{
-  border: #909399 1px solid;
-  color: #333;
-  border-radius: 30px;
-  margin: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
-}
+<style scoped>
+
 </style>
-
-
