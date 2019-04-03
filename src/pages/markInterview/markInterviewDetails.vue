@@ -85,7 +85,7 @@ export default {
   }
 </script>
 
-<style>
+<style scoped>
 /* 全局 */
 body{
   margin: 0;

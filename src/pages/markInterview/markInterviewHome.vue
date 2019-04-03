@@ -5,10 +5,9 @@
     <div class="text item">
       <h4>市场走访详细信息列表</h4>
       <!-- 普通按钮 -->
-      <el-button>导入</el-button>
-      <el-button>导出</el-button>
-      <el-button>添加信息</el-button>
-      <el-button>检索</el-button>
+      <router-link to="markInterviewAdd">
+        <el-button>添加信息</el-button>
+      </router-link>
       <!-- 下拉列表 -->
       <el-select v-model="value" placeholder="请选择">
         <el-option
@@ -35,6 +34,7 @@
         :value="item.value">
         </el-option>
       </el-select>
+      <el-button>检索</el-button>
     </div>
   </el-card>
 	<!-- 表格 -->
@@ -88,7 +88,12 @@
         label="详细信息"
         width="135">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+          <!-- <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button> -->
+          <router-link to="markInterviewDetails">
+              <el-button type="text" size="small">
+                  查看
+              </el-button>
+          </router-link>
         </template>
         </el-table-column>
       </el-table>
@@ -122,9 +127,9 @@ export default {
   }
   ,methods: {
       // 表格点击查看
-      handleClick(row) {
-        console.log(row);
-      },
+      // handleClick(row) {
+      //   console.log(row);
+      // },
       // 远程查询
       loadAll() {
         return [
@@ -182,7 +187,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 /* 全局 */
 body{
   margin: 0;

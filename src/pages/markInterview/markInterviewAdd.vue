@@ -25,6 +25,16 @@
             <el-form-item label="邮编">
               <el-input v-model="form.stamp"></el-input>
             </el-form-item>
+            <el-form-item label="走访情况">
+              <!-- <i class="el-icon-circle-plus"></i> -->
+              <br>
+              <span>联系人</span>
+              <span>职务</span>
+              <span>手机</span>
+              <span>固话</span>
+              <span>EMAIL</span>
+              <span>微信/QQ</span>
+            </el-form-item>
             <el-form-item label="参会意向">
               <el-checkbox-group v-model="form.type">
               <el-checkbox label="秋季非师范毕业生专场" name="type"></el-checkbox>
@@ -85,7 +95,7 @@ export default {
   }
 </script>
 
-<style>
+<style scoped>
 /* 全局 */
 body{
   margin: 0;

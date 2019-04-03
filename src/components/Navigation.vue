@@ -27,18 +27,24 @@
         <el-menu-item index="2-5">城市回访</el-menu-item>
         <el-menu-item index="2-6">城市分级</el-menu-item>
     </el-submenu>
-    <el-menu-item index="3">
-        <template slot="title"><!-- 标题 -->
-            <i class="el-icon-sold-out"></i><!-- 标题图标 -->
-            <span>市场走访管理</span><!-- 标题名称 -->
-        </template>
-    </el-menu-item>
-    <el-menu-item index="4">
-        <template slot="title"><!-- 标题 -->
-            <i class="el-icon-view"></i><!-- 标题图标 -->
-            <span>单位情况分析</span><!-- 标题名称 -->
-        </template>
-    </el-menu-item>
+
+    <router-link to="markInterviewHome">
+        <el-menu-item index="3">
+            <template slot="title"><!-- 标题 -->
+                <i class="el-icon-sold-out"></i><!-- 标题图标 -->
+                <span>市场走访管理</span><!-- 标题名称 -->
+            </template>
+        </el-menu-item>
+    </router-link>
+    <router-link to="caseAnalysisHome">
+        <el-menu-item index="4">
+            <template slot="title"><!-- 标题 -->
+                <i class="el-icon-view"></i><!-- 标题图标 -->
+                <span>单位情况分析</span><!-- 标题名称 -->
+            </template>
+        </el-menu-item>
+    </router-link>
+    
     <el-menu-item index="5">
         <template slot="title"><!-- 标题 -->
             <i class="el-icon-setting"></i><!-- 标题图标 -->
