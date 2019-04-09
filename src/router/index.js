@@ -10,6 +10,12 @@ import markInterviewAdd from '@/pages/markInterview/markInterviewAdd'
 import markInterviewDetails from '@/pages/markInterview/markInterviewDetails'
 import caseAnalysisHome from '@/pages/caseAnalysis/caseAnalysisHome'
 import caseAnalysisDetails from "@/pages/caseAnalysis/caseAnalysisDetails"
+import signCity from '@/pages/classRank/signCity'
+import signCityDetails from '@/pages/classRank/signCityDetails'
+import intentionCity from '@/pages/classRank/intentionCity'
+import intentionCityDetails from '@/pages/classRank/intentionCityDetails'
+import sourceCity from '@/pages/classRank/sourceCity'
+import sourceCityDetails from '@/pages/classRank/sourceCityDetails'
 
 Vue.use(Router)
 
@@ -33,6 +39,12 @@ export default new Router({
         { path: '/markInterviewDetails', component: markInterviewDetails, name: 'markInterviewDetails' },
         { path: '/caseAnalysisHome', component: caseAnalysisHome, name: 'caseAnalysisHome' },
         { path: '/caseAnalysisDetails', component: caseAnalysisDetails, name: 'caseAnalysisDetails' },
+        { path: '/signCity', component: signCity, name: 'signCity' },  
+        { path: '/signCityDetails', component: signCityDetails, name: 'signCityDetails' },
+        { path: '/intentionCity', component: intentionCity, name: 'intentionCity' },
+        { path: '/intentionCityDetails', component: intentionCityDetails, name: 'intentionCityDetails' },
+        { path: '/sourceCity', component: sourceCity, name: 'sourceCity' },
+        { path: '/sourceCityDetails', component: sourceCityDetails, name: 'sourceCityDetails' },
       ]
     },
     {
