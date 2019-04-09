@@ -18,4 +18,8 @@ body{
   margin: 0;
   padding: 0;
 }
+<<<<<<< Updated upstream
 </style>
+=======
+</style>
+>>>>>>> Stashed changes
