@@ -15,30 +15,49 @@
         <el-menu-item index="1-1">教育行业</el-menu-item>
         <el-menu-item index="1-2">非教育行业</el-menu-item>
     </el-submenu>
+
     <el-submenu index="2">
         <template slot="title"><!-- 标题 -->
             <i class="el-icon-menu"></i><!-- 标题图标 -->
             <span>城市分类排名</span><!-- 标题名称 -->
         </template>
-        <el-menu-item index="2-1">签约城市</el-menu-item>
-        <el-menu-item index="2-2">意向城市</el-menu-item>
-        <el-menu-item index="2-3">生源城市</el-menu-item>
-        <el-menu-item index="2-4">往届走访</el-menu-item>
-        <el-menu-item index="2-5">城市回访</el-menu-item>
-        <el-menu-item index="2-6">城市分级</el-menu-item>
+        <router-link to="signCity">
+            <el-menu-item index="2-1">签约城市</el-menu-item>
+        </router-link>
+        <router-link to="intentionCity">
+            <el-menu-item index="2-2">意向城市</el-menu-item>
+        </router-link>
+        <router-link to="sourceCity">
+            <el-menu-item index="2-3">生源城市</el-menu-item>
+        </router-link>
+        <router-link to="formerInterview">
+            <el-menu-item index="2-4">往届走访</el-menu-item>
+        </router-link>
+        <router-link to="cityVisit">
+            <el-menu-item index="2-5">城市回访</el-menu-item>
+        </router-link>
+        <router-link to="cityClassify">
+            <el-menu-item index="2-6">城市分级</el-menu-item>
+        </router-link>
     </el-submenu>
-    <el-menu-item index="3">
-        <template slot="title"><!-- 标题 -->
-            <i class="el-icon-sold-out"></i><!-- 标题图标 -->
-            <span>市场走访管理</span><!-- 标题名称 -->
-        </template>
-    </el-menu-item>
-    <el-menu-item index="4">
-        <template slot="title"><!-- 标题 -->
-            <i class="el-icon-view"></i><!-- 标题图标 -->
-            <span>单位情况分析</span><!-- 标题名称 -->
-        </template>
-    </el-menu-item>
+
+    <router-link to="markInterviewHome">
+        <el-menu-item index="3">
+            <template slot="title"><!-- 标题 -->
+                <i class="el-icon-sold-out"></i><!-- 标题图标 -->
+                <span>市场走访管理</span><!-- 标题名称 -->
+            </template>
+        </el-menu-item>
+    </router-link>
+    <router-link to="caseAnalysisHome">
+        <el-menu-item index="4">
+            <template slot="title"><!-- 标题 -->
+                <i class="el-icon-view"></i><!-- 标题图标 -->
+                <span>单位情况分析</span><!-- 标题名称 -->
+            </template>
+        </el-menu-item>
+    </router-link>
+    
     <el-menu-item index="5">
         <template slot="title"><!-- 标题 -->
             <i class="el-icon-setting"></i><!-- 标题图标 -->

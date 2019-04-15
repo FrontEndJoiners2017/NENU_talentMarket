@@ -53,9 +53,6 @@
 </template>
 
 <script>
-import Navigation from '@/components/Navigation'
-import Header from '@/components/Header'
-
 export default {
     name:'markTnterviewAdd',
     components:{
