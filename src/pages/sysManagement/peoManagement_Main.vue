@@ -20,7 +20,7 @@
                     <el-button type="primary" icon="el-icon-plus" id="addbutton" @click.native="addMananger=true">添加管理员</el-button>
                 </p>
                 <!-- 带边框的表格 -->
-                <el-table :data="tableData" border style="width: 100%" id="peoTable">
+                <el-table :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" border style="width: 100%" id="peoTable">
                     <el-table-column align="center" prop="name" label="姓名"></el-table-column>
                     <el-table-column align="center" prop="email" label="注册邮箱"></el-table-column>
                     <el-table-column align="center" prop="phonenumber" label="联系方式"></el-table-column>
@@ -29,6 +29,9 @@
                         <el-button type="primary" icon="el-icon-delete" @click="dele">删除</el-button>
                     </el-table-column>
                 </el-table>
+                <div id="pagination">
+                    <el-pagination layout="prev, pager, next" :total="total" @current-change="current_change"></el-pagination>
+                </div>
             </div>
 
             <!-- 新增管理员 -->
@@ -66,7 +69,7 @@
                     </el-form>
                     <!-- 使用slot属性定义dialog里的el-button -->
                     <div slot="footer">
-                        <el-button type="primary" @click="addSubmit">确定</el-button>
+                        <el-button type="primary" >确定</el-button>
                         <el-button @click.native="addMananger=false">取消</el-button>
                     </div>
                 </div>
@@ -81,33 +84,18 @@ export default {
     name: 'peoManage_Main',
     data() {
         return{
-             // 新增遮罩是否显示
-            addMananger: true,
-            addManagerModel: true,
+            // 新增遮罩是否显示
+            addMananger: false,
+            addManagerModel: false,
             // 搜索输入框
             input: '',
-
-            tableData: [{
-                name: '李老师',
-                email: 'liusq144@nenu.edu.cn',
-                phonenumber: '12345612345',
-                identity: '主管理',
-                // operation: '删除'
-            },
-            {
-                name: '刘老师',
-                email: 'liusq144@nenu.edu.cn',
-                phonenumber: '12345612345',
-                identity: '管理员',
-                // operation: '删除'
-            },
-            {
-                name: '陈老师',
-                email: 'liusq144@nenu.edu.cn',
-                phonenumber: '12345612345',
-                identity: '管理员',
-                // operation: '删除'
-            }],
+            //分页
+            currentPage: 1,
+            //pagesizes只能为10 20 30 40 50 100……
+            pagesize: 10,
+            total: 0,
+            //表格数据
+            tableData: [],
             addForm: {
                 name: '',
                 email: '',
@@ -132,7 +120,7 @@ export default {
             this.$confirm('是否确认删除该管理员？','提示',{
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
-                type: 'warning'
+                type: 'warning',
             }).then(() => {
                 this.$message({
                     type: 'success',
@@ -148,8 +136,28 @@ export default {
         // 显示新增遮罩
         add() {
             this.addManager=true;
+        },
+        current_change(currentPage){
+            this.currentPage = currentPage;
         }
     },
+    created() {
+        this.$http({
+            method: "get",
+            url: "../../../static/peopleManager.json",
+            dataType: "json",
+            crossDomain: true,
+            cache: false,
+        }).then(resolve => {
+            this.tableData = resolve.data.manager;
+            //获取数组长度赋值给total
+            this.total = resolve.data.manager.length;
+            console.log(this.total);
+            console.log(resolve.data);
+        }, reject => {
+            console.log(reject);
+        })
+    }
 }
 </script>
 
@@ -193,3 +201,4 @@ export default {
         margin: 0 auto;
     }
 </style>
+
