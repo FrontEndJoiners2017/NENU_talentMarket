@@ -5,7 +5,7 @@
 				<div id="intercity">
 					<el-card id="box-card">
   						<div slot="header" class="clearfix" id="cardtitle">
-    						<span>回访城市排名检索</span>
+    						<span>走访城市排名检索</span>
     						<el-button size="small">导入</el-button>
     						<el-button size="small">导出</el-button>
   						</div>
