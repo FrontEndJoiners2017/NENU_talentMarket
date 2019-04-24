@@ -55,6 +55,7 @@ export default {
                     if(this.userInfo.ID === 'monkey' && this.userInfo.Password === '111111'){
                            this.loading = false;
                            sessionStorage.setItem('user', this.userInfo.ID);
+                           global.isLogin = 1
                            this.$router.push({path: '/'});
                     }else{
                         this.loading = false;
@@ -75,14 +76,17 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #loginBox{
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+}
+.box-card {
+    background-color: rgb(255, 255, 255);
+    width: 480px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -80%);
     padding: 1em;
-}
-.box-card {
-    background-color: rgb(255, 255, 255);
-    width: 480px;
 }
 </style>

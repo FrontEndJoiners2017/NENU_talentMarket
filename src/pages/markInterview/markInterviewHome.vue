@@ -115,12 +115,7 @@
 
 <script>
 export default {
-  name: 'markInterviewHome',
-	components: {
-    Navigation,
-    Header
-  }
-  ,methods: {
+  methods: {
       // 表格点击查看
       // handleClick(row) {
       //   console.log(row);

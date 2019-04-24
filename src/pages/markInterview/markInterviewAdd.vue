@@ -64,11 +64,6 @@
 
 <script>
 export default {
-    name:'markTnterviewAdd',
-    components:{
-        Navigation,
-        Header
-    },
     data() {
       return {
         form: {
