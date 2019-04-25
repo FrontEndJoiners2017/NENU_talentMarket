@@ -1,4 +1,3 @@
-// 教育行业
 <template>
     <el-container>
         <el-main>
@@ -21,8 +20,16 @@
             </div>
             <!-- 表格 -->
             <div id="eduTable">
-                <!-- data需要与后端传入的数据做操作，此处为静态data -->
-                <el-table :data="tableData" id="elTable">
+                <!-- data需要与后端传入的数据做操作 -->
+                <!-- 
+                    JavaScript的slice方法： 
+                    语法：arrayObject.slice(start,end)
+                    返回一个包含从start到end的arrayObject中的元素
+
+                    tableData.slice((currentPage-1)*pagesize,currentPage*pagesize) <=> 每页返回10个tableData数组的子元素
+                    第一页从0开始到10结束，依次返回。因为currentPage是不断在变化的  
+                -->
+                <el-table :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" id="elTable">
                     <!-- 创建表格各列 -->
                     <el-table-column align="center" prop="year" label="年份"></el-table-column>
                     <el-table-column align="center" prop="order" label="序号"></el-table-column>
@@ -36,6 +43,10 @@
                     <el-table-column align="center" prop="city_level" label="城市级别"></el-table-column>
                     <el-table-column align="center" prop="comp_score" label="综合评分"></el-table-column>
                 </el-table>
+                <!-- 分页 -->
+                <div id="pagination">
+                    <el-pagination layout="prev, pager, next" :total="total" @current-change="current_change"></el-pagination>
+                </div>
             </div>
         </el-main>
     </el-container>
@@ -45,40 +56,46 @@
 // 引入表格
 
 export default {
-    name: 'eduIndus_Main',
+    // name: 'eduIndus_Main',
     data() {
         return{
             input: '',
-            tableData: [{
-                year: '2019',
-                order: '1',
-                city: '长春',
-                province: '吉林',
-                expectation: 'A',
-                current_contract: 'A',
-                graduate_source: 'B',
-                visited: 'A',
-                return_rate: 'A',
-                city_level: 'A',
-                comp_score: '4.87'
-            },{
-                year: '2019',
-                order: '1',
-                city: '长春',
-                province: '吉林',
-                expectation: 'A',
-                current_contract: 'A',
-                graduate_source: 'B',
-                visited: 'A',
-                return_rate: 'A',
-                city_level: 'A',
-                comp_score: '4.87'
-            }]
+            tableData: [],
+            //当前页数
+            currentPage: 1,
+            //每页装的元组
+            pagesize: 10,
+            //元组总数目
+            total: 0,
         }
-    }
+    },
+    methods: {
+        //传入分页的当前页，令定义的当前页=分页的当前页
+        current_change(currentPage){
+            this.currentPage = currentPage;
+        },
+    },
+    created() {
+        this.$http({
+            method: "get",
+            url: "../../../../static/table.json",
+            dataType: "json",
+            //跨域
+            crossDomain: true,
+            //保证每次请求得到的数据都是最新的而不是缓存的数据
+            cache: false,
+        }).then(resolve => {
+            this.tableData = resolve.data.report;
+            //将元组总数目设为数据的总数目
+            this.total=resolve.data.report.length;
+            console.log(resolve.data);
+        }, reject => {
+            console.log("失败",reject);
+        })
+    },
 }
 </script>
-<style>
+<style scoped>
     #eduTop {
         width: 99.5%;
         border: #cbcaca 1px solid;
@@ -123,3 +140,4 @@ export default {
         width: 100%;
     }
 </style>
+

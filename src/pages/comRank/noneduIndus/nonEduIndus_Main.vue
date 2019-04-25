@@ -1,4 +1,3 @@
-// 非教育行业
 <template>
     <el-container>
         <el-main>
@@ -22,7 +21,7 @@
             <!-- 表格 -->
             <div id="eduTable">
                 <!-- data需要与后端传入的数据做操作，此处为静态data -->
-                <el-table :data="tableData" id="elTable">
+                <el-table :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" id="elTable">
                     <!-- 创建表格各列 -->
                     <el-table-column align="center" prop="year" label="年份"></el-table-column>
                     <el-table-column align="center" prop="order" label="序号"></el-table-column>
@@ -36,6 +35,9 @@
                     <el-table-column align="center" prop="city_level" label="城市级别"></el-table-column>
                     <el-table-column align="center" prop="comp_score" label="综合评分"></el-table-column>
                 </el-table>
+                <div id="pagination">
+                    <el-pagination layout="prev, pager, next" :total="total" @current-change="current_change"></el-pagination>
+                </div>
             </div>
         </el-main>
     </el-container>
@@ -43,40 +45,43 @@
 
 <script>
 export default {
-    name: 'eduIndus_Top',
+    // name: 'eduIndus_Top',
     data() {
         return{
             input: '',
-            tableData: [{
-                year: '2019',
-                order: '1',
-                city: '长春',
-                province: '吉林',
-                expectation: 'A',
-                current_contract: 'A',
-                graduate_source: 'B',
-                visited: 'A',
-                return_rate: 'A',
-                city_level: 'A',
-                comp_score: '4.87'
-            },{
-                year: '2019',
-                order: '1',
-                city: '长春',
-                province: '吉林',
-                expectation: 'A',
-                current_contract: 'A',
-                graduate_source: 'B',
-                visited: 'A',
-                return_rate: 'A',
-                city_level: 'A',
-                comp_score: '4.87'
-            }]
+            tableData: [],
+            //定义分页变量
+            currentPage: 1,
+            pagesize: 10,
+            total: 0,
         }
-    }
+    },
+    methods: {
+        current_change(currentPage){
+            this.currentPage = currentPage;
+        }
+    },
+    created() {
+        this.$http({
+            method: "get",
+            url: "../../../../static/table.json",
+            dataType: "json",
+            //跨域
+            crossDomain: true,
+            //保证每次请求得到的数据都是最新的而不是缓存的数据
+            cache: false,
+        }).then(resolve => {
+            this.tableData = resolve.data.report;
+            //获取数组长度并赋值给total
+            this.total = resolve.data.report.length;
+            console.log(resolve.data);
+        }, reject => {
+            console.log("失败",reject);
+        })
+    },
 }
 </script>
-<style>
+<style scoped>
     #eduTop {
         width: 99.5%;
         border: #cbcaca 1px solid;

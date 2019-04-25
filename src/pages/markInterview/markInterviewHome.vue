@@ -5,7 +5,7 @@
     <div class="text item">
       <h4>市场走访详细信息列表</h4>
       <!-- 普通按钮 -->
-      <router-link to="markInterviewAdd">
+      <router-link :to="{name:'markInterviewAdd'}">
         <el-button>添加信息</el-button>
       </router-link>
       <!-- 下拉列表 -->

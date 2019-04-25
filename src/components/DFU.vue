@@ -4,7 +4,6 @@
             <h1>就业市场数据分析系统使用说明</h1>
         </el-card>
         <el-card class="box-card">
-            <h1>系统使用说明</h1>
             <div class="textBox">
                 <p><b>一、综合数据分析依据：六角分析法</b></p>
                     <el-table :data="tableData" borderstyle="width: 100%">

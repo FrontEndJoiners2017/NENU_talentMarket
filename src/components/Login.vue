@@ -1,7 +1,12 @@
 <template>
 <div id="loginBox">
+    <div id="backTitle">
+        <h1 id="NENU">NENU</h1>
+        <h2>就业市场数据分析系统>>></h2>
+    </div>
     <el-card class="box-card" v-loading="loading">
         <h1>欢迎登录</h1>
+        <hr/>
         <el-form label-position="right"
                 label-width="70px" 
                 :model="userInfo" 
@@ -59,8 +64,8 @@ export default {
                            this.$router.push({path: '/'});
                     }else{
                         this.loading = false;
-                        this.$alert('username or password wrong!', 'info', {
-                            confirmButtonText: 'ok'
+                        this.$alert('请检查用户名或密码是否有误。', '登录失败', {
+                            confirmButtonText: '确定'
                         })
                     }
                 }else{
@@ -75,18 +80,33 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#loginBox{
-    width: 100%;
-    height: 100%;
-    background-color: #fff;
-}
 .box-card {
     background-color: rgb(255, 255, 255);
     width: 480px;
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 55%;
+    left: 70%;
     transform: translate(-50%, -80%);
+    text-align: left;
     padding: 1em;
+}
+hr{
+    margin: -15px 0 30px 0;
+}
+#backTitle{
+    margin: 0 auto;
+    text-align: left;
+}
+#backTitle h1{
+    color: #EFEFEF;
+    font-size: 300px;
+    text-shadow: #FFFFFF 10px 10px;
+    margin: 0 0 0 50px;
+}
+#backTitle h2{
+    color: #EFEFEF;
+    font-size: 50px;
+    text-shadow: #FFFFFF 2px 2px;
+    margin: -50px 0 0 100px;
 }
 </style>
