@@ -2,12 +2,14 @@
     <el-container id="leftBox">
       <!--侧边栏容器-->
       <el-aside>
-        <Navigation/>
+        <!-- <Navigation/> -->
+        <router-view name="nav"></router-view>
       </el-aside>
       <el-container>
         <!--上边栏容器-->
         <el-header>
-          <Header/>
+          <!-- <Header/> -->
+        <router-view name="header"></router-view>
         </el-header>
         <!--内容栏容器-->
         <el-main>

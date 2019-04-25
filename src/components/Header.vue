@@ -1,10 +1,8 @@
 <template>
-    <el-card class="box-card">
-      <!-- <p> -->
+      <p>
         Welcome, {{ UserName }}.This is header area.
         <el-button type="danger" icon="el-icon-close" circle></el-button>
-      <!-- </p> -->
-    </el-card>
+      </p>
 </template>
 <script>
 export default {
@@ -16,5 +14,10 @@ export default {
 }
 </script>
 <style scoped>
-
+body{
+  background-color: #fff;
+}
+template{
+  background-color: #fff;
+}
 </style>

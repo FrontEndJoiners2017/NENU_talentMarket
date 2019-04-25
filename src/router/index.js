@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+//
+import Navigation from '@/components/Navigation'
+import Header from '@/components/Header'
 // 一级分类
 import Login from '@/Login'   //登录页面
 import Container from '@/Container'   //视图容器
@@ -9,11 +12,11 @@ import HelloWorld from '@/components/HelloWorld'    //HelloWorld
 import DFU from '@/components/DFU'    //主页 描述页面
 // 分页面
 // 市场走访管理
-import markInterviewHome from '@/pages/markInterview/markInterviewHome'
+import markInterview from '@/pages/markInterview/markInterviewHome'
 import markInterviewAdd from '@/pages/markInterview/markInterviewAdd'
 import markInterviewDetails from '@/pages/markInterview/markInterviewDetails'
 // 单位情况分析
-import caseAnalysisHome from '@/pages/caseAnalysis/caseAnalysisHome'
+import caseAnalysis from '@/pages/caseAnalysis/caseAnalysisHome'
 import caseAnalysisDetails from "@/pages/caseAnalysis/caseAnalysisDetails"
 // 城市分类排名
 import signCity from '@/pages/classRank/signCity'
@@ -29,43 +32,75 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
   routes: [
-    //登录路由
+    /**
+     * 首页 DFU
+     * 登录 Login
+     * 重定向 /
+     * @author ShunhangHU
+     */
+    {
+      path: '/',
+      components:{
+        default: DFU,
+        nav: Navigation,
+        header: Header
+      },
+      name: DFU
+    },
+    // {
+    //   path: '/',
+    //   component: Container,
+    //   name: 'Container',
+    //   children: [
+    //     { path: '/DFU', component: DFU, name: 'DFU' },
+    //     { path: '/HelloWorld', component: HelloWorld, name: 'HelloWorld' },
+    //   ]
+    // },
     {
       path: '/Login',
       component: Login,
       name: 'Login',
       hidden: true
     },
-    //重定向
     {
       path: '/',  // 默认进入路由
       redirect: '/DFU'   //重定向
     },
+    /**
+     * 市场走访管理
+     * markInterview
+     * |--Add
+     * |--Details
+     * @author WenqingXU
+     */
     {
-      path: '/',
-      component: Container,
-      name: 'Container',
+      path: '/markInterview',
+      components:{
+        default: markInterview,
+        nav: Navigation,
+        header: Header
+      },
+      name: 'markInterview',
       children: [
-        { path: '/DFU', component: DFU, name: 'DFU' },
-        { path: '/HelloWorld', component: HelloWorld, name: 'HelloWorld' },
-        
-        { path: '/markInterviewHome', component: markInterviewHome, name: 'markInterviewHome' },
-        { path: '/markInterviewAdd', component: markInterviewAdd, name: 'markInterviewAdd' },
-        { path: '/markInterviewDetails', component: markInterviewDetails, name: 'markInterviewDetails' },
-      
-        { path: '/caseAnalysisHome', component: caseAnalysisHome, name: 'caseAnalysisHome' },
-        { path: '/caseAnalysisDetails', component: caseAnalysisDetails, name: 'caseAnalysisDetails' },
-        
-        { path: '/peoManagement_Main', component: peoManagement_Main, name: 'peoManagement_Main'},
-        
-        { path: '/signCity', component: signCity, name: 'signCity' },
-        { path: '/signCityDetails', component: signCityDetails, name: 'signCityDetails' },
-        { path: '/intentionCity', component: intentionCity, name: 'intentionCity' },
-        { path: '/intentionCityDetails', component: intentionCityDetails, name: 'intentionCityDetails' },
-        { path: '/sourceCity', component: sourceCity, name: 'sourceCity' },
-        { path: '/sourceCityDetails', component: sourceCityDetails, name: 'sourceCityDetails' },
+        { path: '/markInterview/Add', component: markInterviewAdd, name: 'markInterviewAdd'},
+        { path: '/markInterview/Details', component: markInterviewDetails, name: 'markInterviewDetails'}
       ]
     },
+
+    /**
+     * 单位情况分析
+     * caseAnalysis
+     * |--Details
+     * @author WenqingXU
+     */
+    // {
+    //   path: '/caseAnalysis',
+    //   component: caseAnalysis,
+    //   name: 'caseAnalysis',
+    //   children: [
+    //     { path: '/caseAnalysis/Details', component: caseAnalysisDetails, name: 'caseAnalysisDetails'}
+    //   ]
+    // },
     
     //404NotFound页面
     {
