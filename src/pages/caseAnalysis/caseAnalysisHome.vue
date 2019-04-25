@@ -6,7 +6,7 @@
                 <h4>单位详情列表</h4>
                 <!-- 远程搜索 -->
                 <el-select
-                v-model="value9"
+                v-model="keyWds"
                 multiple
                 filterable
                 remote
@@ -15,7 +15,7 @@
                 :remote-method="remoteMethod"
                 :loading="loading">
                     <el-option
-                    v-for="item in options4"
+                    v-for="item in options"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -101,9 +101,6 @@
 </template>
 
 <script>
-import Navigation from '@/components/Navigation'
-import Header from '@/components/Header'
-
 export default {
     data() {
         return {
@@ -120,9 +117,11 @@ export default {
             details:''
           }],
           // 远程搜索部分
-          restaurants: [],
-          state4: '',
-          timeout:  null,
+          options: [],
+          keyWds: [],
+          list: [],
+          loading: false,
+          states: [],
           // 下拉列表
           options: [{
           value: '选项1',
@@ -130,40 +129,34 @@ export default {
         }]
         }
       },
-  methods: {
-      // 表格点击查看
-      // handleClick(row) {
-      //   console.log(row);
-      // },
+    mounted() {
+      this.list = this.states.map(item => {
+        // return { value: item, label: item };
+        return { keyWds: item, label: item };
+      });
+    },
+    methods: {
+        // 表格点击查看
+        // handleClick(row) {
+        //   console.log(row);
+        // },
 
-      // 远程查询
-      loadAll() {
-        return [
-          { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-        ];
-      },
-       querySearchAsync(queryString, cb) {
-        var restaurants = this.restaurants;
-        var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
-
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-          cb(results);
-        }, 3000 * Math.random());
-      },
-      createStateFilter(queryString) {
-        return (state) => {
-          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-      handleSelect(item) {
-        console.log(item);
-      },
-      // strange！
-      mounted() {
-        this.restaurants = this.loadAll();
+        // 远程查询
+        remoteMethod(query) {
+        if (query !== '') {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.options = this.list.filter(item => {
+              return item.label.toLowerCase()
+                .indexOf(query.toLowerCase()) > -1;
+            });
+          }, 200);
+        } else {
+          this.options = [];
+        }
       }
-    }
+    },//methods结束
 }
 </script>
 
