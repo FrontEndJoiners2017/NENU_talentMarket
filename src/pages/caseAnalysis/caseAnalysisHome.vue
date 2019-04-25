@@ -105,12 +105,32 @@ import Navigation from '@/components/Navigation'
 import Header from '@/components/Header'
 
 export default {
-  name: 'caseAnalysisHome',
-	components: {
-    Navigation,
-    Header
-  }
-  ,methods: {
+    data() {
+        return {
+          // 表格部分
+          tableData: [{
+            num: '',
+            name: '',
+            property: '',
+            city:'',
+            province:'',
+            interviewTimes:'',
+            speechTimes:'',
+            signedTimes:'',
+            details:''
+          }],
+          // 远程搜索部分
+          restaurants: [],
+          state4: '',
+          timeout:  null,
+          // 下拉列表
+          options: [{
+          value: '选项1',
+          label: '2019'
+        }]
+        }
+      },
+  methods: {
       // 表格点击查看
       // handleClick(row) {
       //   console.log(row);
@@ -144,31 +164,6 @@ export default {
         this.restaurants = this.loadAll();
       }
     }
-    ,data() {
-        return {
-          // 表格部分
-          tableData: [{
-            num: '',
-            name: '',
-            property: '',
-            city:'',
-            province:'',
-            interviewTimes:'',
-            speechTimes:'',
-            signedTimes:'',
-            details:''
-          }],
-          // 远程搜索部分
-          restaurants: [],
-          state4: '',
-          timeout:  null,
-          // 下拉列表
-          options: [{
-          value: '选项1',
-          label: '2019'
-        }]
-        }
-      }
 }
 </script>
 

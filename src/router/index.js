@@ -1,12 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// 一级分类
-import Login from '@/Login'   //登录页面
-import Container from '@/Container'   //视图容器
-import NotFound from '@/components/NotFound'    //NotFound
 // 公共页面
-import HelloWorld from '@/components/HelloWorld'    //HelloWorld
-import DFU from '@/components/DFU'    //主页 描述页面
 import Login from '@/Login'
 import Container from '@/Container'
 import NotFound from '@/components/NotFound'

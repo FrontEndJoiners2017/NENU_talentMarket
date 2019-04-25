@@ -178,8 +178,11 @@ export default {
               position:'',
               signedYear:''
           }]
-        }
-      }
+        }//return结束
+      },//data结束
+    methods:{
+        
+    }
 }
 </script>
 
