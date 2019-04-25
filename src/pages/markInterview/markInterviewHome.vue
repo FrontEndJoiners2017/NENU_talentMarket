@@ -9,7 +9,7 @@
         <el-button>添加信息</el-button>
       </router-link>
       <!-- 下拉列表 -->
-      <el-select v-model="value" placeholder="请选择">
+      <el-select v-model="year" placeholder="请选择">
         <el-option
         v-for="item in options"
         :key="item.value"
@@ -19,7 +19,7 @@
       </el-select>
       <!-- 远程搜索 -->
       <el-select
-      v-model="value9"
+      v-model="search"
       multiple
       filterable
       remote
@@ -28,7 +28,7 @@
       :remote-method="remoteMethod"
       :loading="loading">
         <el-option
-        v-for="item in options4"
+        v-for="item in options"
         :key="item.value"
         :label="item.label"
         :value="item.value">
@@ -115,41 +115,10 @@
 
 <script>
 export default {
-  methods: {
-      // 表格点击查看
-      // handleClick(row) {
-      //   console.log(row);
-      // },
-      // 远程查询
-      loadAll() {
-        return [
-          { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-        ];
-      },
-       querySearchAsync(queryString, cb) {
-        var restaurants = this.restaurants;
-        var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
-
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-          cb(results);
-        }, 3000 * Math.random());
-      },
-      createStateFilter(queryString) {
-        return (state) => {
-          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-      handleSelect(item) {
-        console.log(item);
-      },
-      // strange！
-      mounted() {
-        this.restaurants = this.loadAll();
-      }
-    }
-    ,data() {
+    data() {
         return {
+          //检索部分
+          year:'',
           // 表格部分
           tableData: [{
             date: '',
@@ -163,16 +132,46 @@ export default {
             details:''
           }],
           // 远程搜索部分
-          restaurants: [],
-          state4: '',
-          timeout:  null,
+          options: [],
+          search: [],
+          list: [],
+          loading: false,
+          states: [],
           // 下拉列表
           options: [{
           value: '选项1',
           label: '2019'
         }]
         }
+    },//data结束
+    mounted() {
+      this.list = this.states.map(item => {
+        // return { value: item, label: item };
+        return { search: item, label: item };
+      });
+    },
+    methods: {
+      // 表格点击查看
+      // handleClick(row) {
+      //   console.log(row);
+      // },
+      // 远程查询
+      remoteMethod(query) {
+        if (query !== '') {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.options = this.list.filter(item => {
+              return item.label.toLowerCase()
+                .indexOf(query.toLowerCase()) > -1;
+            });
+          }, 200);
+        } else {
+          this.options = [];
+        }
       }
+    },//method结束
+
 }
 </script>
 
