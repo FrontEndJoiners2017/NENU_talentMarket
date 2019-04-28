@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '../store' //引入store
 // 公共页面
 import Login from '@/components/Login'   //登录页面
 import NotFound from '@/components/NotFound'    //NotFound
@@ -26,6 +27,7 @@ import caseAnalysis from '@/pages/caseAnalysis/caseAnalysisHome'
 import caseAnalysisDetails from '@/pages/caseAnalysis/caseAnalysisDetails'
 //系统管理√
 import peoManagement from '@/pages/sysManagement/peoManagement_Main'
+import { Store } from 'vuex';
 
 Vue.use(VueRouter)
 
@@ -50,7 +52,10 @@ const router = new VueRouter({
     {
       path: '/DFU',
       component: DFU,
-      name: 'DFU'
+      name: 'DFU',
+      meta:{
+        requiresAuth: true
+      }
     },
     /**
      * 城市综合排名
@@ -62,12 +67,18 @@ const router = new VueRouter({
     {
       path: '/comRank/eduIndus',
       component: eduIndus,
-      name: 'eduIndus'
+      name: 'eduIndus',
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/comRank/nonEduIndus',
       component: nonEduIndus,
-      name: 'nonEduIndus'
+      name: 'nonEduIndus',
+      meta: {
+        requiresAuth: true
+      }
     },
     /**
      * 城市分类排名
@@ -90,47 +101,74 @@ const router = new VueRouter({
     {
       path:'/signCity',
       component: signCity,
-      name:'signCity'
+      name: 'signCity',
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/signCity/Details',
       component: signCityDetails,
-      name: 'signCityDetails'
+      name: 'signCityDetails',
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/intentionCity',
       component: intentionCity,
-      name: 'intentionCity'
+      name: 'intentionCity',
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/intentionCity/Details',
       component: intentionCityDetails,
-      name: 'intentionCityDetails'
+      name: 'intentionCityDetails',
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/sourceCity',
       component: sourceCity,
-      name: 'sourceCity'
+      name: 'sourceCity',
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/sourceCity/Details',
       component: sourceCityDetails,
-      name: 'sourceCityDetails'
+      name: 'sourceCityDetails',
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/formerInterview',
       component: formerInterview,
-      name: 'formerInterview'
+      name: 'formerInterview',
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/cityVisit',
       component: cityVisit,
-      name: 'cityVisit'
+      name: 'cityVisit',
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/cityClassify',
       component: cityClassify,
-      name: 'cityClassify'
+      name: 'cityClassify',
+      meta: {
+        requiresAuth: true
+      }
     },
 
     /**
@@ -144,15 +182,24 @@ const router = new VueRouter({
       path: '/markInterview',
       component: markInterview,
       name: 'markInterview',
+      meta: {
+        requiresAuth: true
+      }
     },
     { 
       path: '/markInterview/Add', 
       component: markInterviewAdd, 
-      name: 'markInterviewAdd' 
+      name: 'markInterviewAdd',
+      meta: {
+        requiresAuth: true
+      }
     },
     { path: '/markInterview/Details', 
       component: markInterviewDetails, 
-      name: 'markInterviewDetails' 
+      name: 'markInterviewDetails',
+      meta: {
+        requiresAuth: true
+      }
     },
     /**
      * 单位情况分析
@@ -164,11 +211,17 @@ const router = new VueRouter({
       path: '/caseAnalysis',
       component: caseAnalysis,
       name: 'caseAnalysis',
+      meta: {
+        requiresAuth: true
+      }
     },
     { 
       path: '/caseAnalysis/Details', 
       component: caseAnalysisDetails, 
-      name: 'caseAnalysisDetails' 
+      name: 'caseAnalysisDetails',
+      meta: {
+        requiresAuth: true
+      }
     },
     /**
      * 系统管理
@@ -179,7 +232,10 @@ const router = new VueRouter({
     {
       path: '/sysManagement/peoManagement',
       component:peoManagement,
-      name:'peoManagement'
+      name: 'peoManagement',
+      meta: {
+        requiresAuth: true
+      }
     },
     //404NotFound页面
     {
@@ -197,27 +253,18 @@ const router = new VueRouter({
 })
 
 // 全局路由守卫
-// router.beforeEach((to, from, next) => {
-//   console.log('navigation-guards');
-//   // to: Route: 即将要进入的目标 路由对象
-//   // from: Route: 当前导航正要离开的路由
-//   // next: Function: 一定要调用该方法来 resolve 这个钩子。执行效果依赖 next 方法的调用参数。
-
-//   const nextRoute = ['DFU', 'HelloWorld', 'markInterviewHome', 'markInterviewAdd', 'markInterviewDetails', 'caseAnalysisHome', 'caseAnalysisDetails'];
-//   let isLogin = global.isLogin;  // 是否登录
-//   // 未登录状态；当路由到nextRoute指定页时，跳转至Login
-//   if (nextRoute.indexOf(to.name) >= 0) {
-//     if (!isLogin) {
-//       router.push({ name: 'Login' })
-//     }
-//   }
-//   // 已登录状态；当路由到Login时，跳转至home 
-//   if (to.name === 'Login') {
-//     if (isLogin) {
-//       router.push({ name: 'DFU' });
-//     }
-//   }
-//   next();
-// });
+router.beforeEach((to, from, next) => {
+  const isLogined = store.getters.getIsLogined    //获取登录状态
+  /*如果进入需要登录的页面，就判断是否已经登录，如果登录》next，如果没登录》Login*/
+  if (to.meta.requiresAuth) {
+    if (isLogined) {
+      next()
+    } else {
+      next('/Login')
+    }
+  } else {
+    next()
+  }
+})
 
 export default router;

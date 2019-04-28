@@ -9,19 +9,6 @@ import store from './store'
 
 Vue.config.productionTip = false
 
-/* 未登录，将强行返回Login页面 */
-// router.beforeEach((to, from, next) => {
-//   //NProgress.start();
-//   if (to.path == '/login') {
-//     sessionStorage.removeItem('user');
-//   }
-//   let user = JSON.parse(sessionStorage.getItem('user'));
-//   if (!user && to.path != '/login') {
-//     next({ path: '/login' })
-//   } else {
-//     next()
-//   }
-// })
 /* eslint-disable no-new */
 Vue.use(ElementUI)
 new Vue({
