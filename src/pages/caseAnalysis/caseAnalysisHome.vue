@@ -74,14 +74,12 @@
                     prop="details"
                     label="详细信息"
                     width="135">
-                        <template slot-scope="scope">
-                        <!-- <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button> -->
+                        <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
                             <router-link to="caseAnalysisDetails">
                                 <el-button type="text" size="small">
                                     查看
                                 </el-button>
                             </router-link>
-                        </template>
                     </el-table-column>
                 </el-table>
             </div>

@@ -9,14 +9,13 @@ import eduIndus from '@/pages/comRank/eduIndus/eduIndus_Main'
 import nonEduIndus from '@/pages/comRank/nonEduIndus/noneduIndus_Main'
 // 城市分类排名
 import signCity from '@/pages/classRank/signCity/signCity'
-import signCityDetails from '@/pages/classRank/signCity/signCityDetails'
 import intentionCity from '@/pages/classRank/intentionCity/intentionCity'
-import intentionCityDetails from '@/pages/classRank/intentionCity/intentionCityDetails'
 import sourceCity from '@/pages/classRank/sourceCity/sourceCity'
-import sourceCityDetails from '@/pages/classRank/sourceCity/sourceCityDetails'
 import formerInterview from '@/pages/classRank/formerInterview/formerInterview'
 import cityVisit from '@/pages/classRank/cityVisit/cityVisit'
 import cityClassify from '@/pages/classRank/cityClassify/cityClassify'
+// 城市分类排名 > 公共的详细城市信息页面
+import cityDetails from '@/pages/classRank/cityDetails/cityDetails'   
 // 市场走访管理
 import markInterview from '@/pages/markInterview/markInterviewHome'
 import markInterviewAdd from '@/pages/markInterview/markInterviewAdd'
@@ -88,14 +87,14 @@ const router = new VueRouter({
      * @author HaichuanCHU
      */
     {
+      path: '/cityDetails',
+      component: cityDetails,
+      name: 'cityDetails'
+    },
+    {
       path:'/signCity',
       component: signCity,
       name:'signCity'
-    },
-    {
-      path: '/signCity/Details',
-      component: signCityDetails,
-      name: 'signCityDetails'
     },
     {
       path: '/intentionCity',
@@ -103,19 +102,9 @@ const router = new VueRouter({
       name: 'intentionCity'
     },
     {
-      path: '/intentionCity/Details',
-      component: intentionCityDetails,
-      name: 'intentionCityDetails'
-    },
-    {
       path: '/sourceCity',
       component: sourceCity,
       name: 'sourceCity'
-    },
-    {
-      path: '/sourceCity/Details',
-      component: sourceCityDetails,
-      name: 'sourceCityDetails'
     },
     {
       path: '/formerInterview',
