@@ -2,78 +2,144 @@
     <el-container>
         <el-main>
             <!-- 搜索框部分 -->
-            <div id="eduTop">
-                <el-card id="edu-boxCard">
-                    <div id="TopTitle">
-                        <span>非教育行业 / 往年市场开发历史纪录</span>
-                    </div>
+            <el-card id="nonedu-boxCard">
+                <div id="TopTitle">
+                    <span>非教育行业 / 往年市场开发历史纪录</span>
+                </div>
+                <el-form :model="searchBox">
                     <!-- 使用栅格设置input框的大小 -->
-                    <el-col :span="5">
-                        <el-input v-model="input" placeholder="关键字搜索" id="searchIn"></el-input>
-                    </el-col>
-                    <span id="CheckBtn">
-                        <el-checkbox label="详细数据"></el-checkbox>
-                        <el-checkbox label="数据分级"></el-checkbox>
-                        <el-button type="primary" icon="el-icon-search">检索</el-button>
-                    </span>
-                </el-card>
-            </div>
+                    <el-row>
+                        <el-col :span="5">
+                            <el-form-item prop="searchInput">
+                                <el-input v-model="searchBox.searchInput" placeholder="关键字搜索" id="searchIn"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="3">
+                            <el-form-item prop="detailDigital">
+                            <!-- el-checkbox的返回值为 true 或 false -->
+                                <el-checkbox v-model="searchBox.detailDigital" label="详细数据" ></el-checkbox>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="2">
+                            <el-form-item prop="digitalClassification">
+                                <el-checkbox v-model="searchBox.digitalClassification" label="数据分级" ></el-checkbox>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="5">
+                            <el-form-item>
+                                <el-button type="primary" icon="el-icon-search" @click="search()" plain>检索</el-button>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </el-card>
             <!-- 表格 -->
-            <div id="eduTable">
-                <!-- data需要与后端传入的数据做操作，此处为静态data -->
+            <el-card id="noneduTable">
+                <!-- data需要与后端传入的数据做操作 -->
+                <!-- 
+                    JavaScript的slice方法： 
+                    语法：arrayObject.slice(start,end)
+                    返回一个包含从start到end的arrayObject中的元素
+
+                    tableData.slice((currentPage-1)*pagesize,currentPage*pagesize) <=> 每页返回10个tableData数组的子元素
+                    第一页从0开始到10结束，依次返回。因为currentPage是不断在变化的  
+                -->
                 <el-table :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" id="elTable">
                     <!-- 创建表格各列 -->
                     <el-table-column align="center" prop="year" label="年份"></el-table-column>
-                    <el-table-column align="center" prop="order" label="序号"></el-table-column>
-                    <el-table-column align="center" prop="city" label="城市"></el-table-column>
-                    <el-table-column align="center" prop="province" label="省份"></el-table-column>
-                    <el-table-column align="center" prop="expectation" label="毕业期望"></el-table-column>
-                    <el-table-column align="center" prop="current_contract" label="本届签约"></el-table-column>
-                    <el-table-column align="center" prop="graduate_source" label="年毕业生源"></el-table-column>
-                    <el-table-column align="center" prop="visited" label="往届走访"></el-table-column>
-                    <el-table-column align="center" prop="return_rate" label="回访率"></el-table-column>
-                    <el-table-column align="center" prop="city_level" label="城市级别"></el-table-column>
-                    <el-table-column align="center" prop="comp_score" label="综合评分"></el-table-column>
+                    <el-table-column align="center" prop="id" label="序号"></el-table-column>
+                    <el-table-column align="center" prop="city_name" label="城市"></el-table-column>
+                    <!-- <el-table-column align="center" prop="province" label="省份"></el-table-column> -->
+                    <el-table-column align="center" prop="city_exception" label="毕业期望"></el-table-column>
+                    <el-table-column align="center" prop="city_sign" label="本届签约"></el-table-column>
+                    <el-table-column align="center" prop="city_studentFrom" label="毕业生源"></el-table-column>
+                    <el-table-column align="center" prop="city_visit" label="往届走访"></el-table-column>
+                    <el-table-column align="center" prop="city_recency" label="回访率"></el-table-column>
+                    <el-table-column align="center" prop="city_grading" label="城市级别"></el-table-column>
+                    <el-table-column align="center" prop="city_score" label="综合评分"></el-table-column>
                 </el-table>
+                <!-- 分页 -->
                 <div id="pagination">
-                    <el-pagination layout="prev, pager, next" :total="total" @current-change="current_change"></el-pagination>
+                    <el-pagination background layout="prev, pager, next" :total="total" @current-change="current_change"></el-pagination>
                 </div>
-            </div>
+            </el-card>
         </el-main>
     </el-container>
 </template>
 
 <script>
+// 引入表格
+
 export default {
-    // name: 'eduIndus_Top',
     data() {
         return{
             input: '',
             tableData: [],
-            //定义分页变量
+            //当前页数
             currentPage: 1,
+            //每页装的元组
             pagesize: 10,
+            //元组总数目
             total: 0,
+
+            //搜索部分
+            searchBox: {
+                //搜索输入框
+                searchInput: '',
+                //详细数据
+                detailDigital: 0,
+                //城市分级
+                digitalClassification: 0,
+            },
         }
     },
     methods: {
+        //传入分页的当前页，令定义的当前页=分页的当前页
         current_change(currentPage){
             this.currentPage = currentPage;
-        }
+        },
+        //进行搜索
+        search(){
+            console.log(this.searchBox.detailDigital);
+            this.$http({
+                method: "post",
+                url: "http://localhost:8088/testBoot/selectEducationByKeyword",
+                //keyword与后端代码中的局部变量相同
+                data:{
+                    keyword: this.searchBox.searchInput,
+                },
+                crossDomain: true,
+                cache: false,
+                // 加"transformRequest"属性对请求数据进行格式化
+                transformRequest(obj){
+                    var str = [];
+                    for(var p in obj){
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    }
+                    return str.join("&");
+                },
+            }).then(response => {
+                this.tableData = response.data;
+                this.total = response.data.length;
+                console.log(response.data);
+            },reject =>{
+                console.log("失败"+reject);
+            })
+        },
     },
     created() {
         this.$http({
-            method: "get",
-            url: "../../../../static/table.json",
+            method: "post",
+            url: "http://localhost:8088/testBoot/listAll",
             dataType: "json",
             //跨域
             crossDomain: true,
             //保证每次请求得到的数据都是最新的而不是缓存的数据
             cache: false,
         }).then(resolve => {
-            this.tableData = resolve.data.report;
-            //获取数组长度并赋值给total
-            this.total = resolve.data.report.length;
+            this.tableData = resolve.data;
+            //将元组总数目设为数据的总数目
+            this.total = resolve.data.length;
             console.log(resolve.data);
         }, reject => {
             console.log("失败",reject);
@@ -82,17 +148,13 @@ export default {
 }
 </script>
 <style scoped>
-    #eduTop {
-        width: 99.5%;
-        border: #cbcaca 1px solid;
-        border-radius: 10px;
-        margin: 0 auto;
-        margin-top: 1%;
-    }
-    #edu-boxCard {
+    #nonedu-boxCard {
         position: relative;
-        width: 99.8%;
         border-radius: 10px;
+        text-align: center;
+    }
+    .el-form-item {
+        margin-bottom: 0;
     }
     #TopTitle {
         position: relative;
@@ -102,10 +164,6 @@ export default {
         margin-bottom: 1.7%;
     }
     /* 使用选择器设置input的高度 */
-    #searchIn {
-        display: inline-block;
-        height: 30px;
-    }
     #CheckBtn {
         display: inline-block;
         /* border: 1px solid red; */
@@ -114,9 +172,9 @@ export default {
     .dataIO {
         height: 30px;
     }
-    #eduTable{
-        padding: 1%;
-        border: #cbcaca 1px solid;
+    #noneduTable{
+        /* padding: 1%; */
+        /* border: #cbcaca 1px solid; */
         color: #333;
         margin-top: 1%;
         border-radius: 10px;
@@ -125,4 +183,8 @@ export default {
         border-radius: 10px;
         width: 100%;
     }
+    #pagination {
+        text-align: center;
+    }
 </style>
+
