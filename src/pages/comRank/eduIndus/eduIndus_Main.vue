@@ -1,8 +1,8 @@
 <template>
     <el-container>
-        <el-main>
-            <!-- 搜索框部分 -->
-            <el-card id="edu-boxCard">
+        <div id="eduHome">
+        <!-- 搜索框部分 -->
+            <el-card class="edu-boxCard">
                 <div id="TopTitle">
                     <span>教育行业 / 往年市场开发历史纪录</span>
                 </div>
@@ -33,8 +33,9 @@
                     </el-row>
                 </el-form>
             </el-card>
+            
             <!-- 表格 -->
-            <el-card id="eduTable">
+            <el-card class="edu-boxCard" id="eduTable">
                 <!-- data需要与后端传入的数据做操作 -->
                 <!-- 
                     JavaScript的slice方法： 
@@ -44,12 +45,12 @@
                     tableData.slice((currentPage-1)*pagesize,currentPage*pagesize) <=> 每页返回10个tableData数组的子元素
                     第一页从0开始到10结束，依次返回。因为currentPage是不断在变化的  
                 -->
-                <el-table :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" id="elTable">
+                <el-table v-loading="eduLoading" :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" style="width: 100%" id="elTable">
                     <!-- 创建表格各列 -->
                     <el-table-column align="center" prop="year" label="年份"></el-table-column>
                     <el-table-column align="center" prop="id" label="序号"></el-table-column>
                     <el-table-column align="center" prop="city_name" label="城市"></el-table-column>
-                    <!-- <el-table-column align="center" prop="province" label="省份"></el-table-column> -->
+                    <el-table-column align="center" prop="province" label="省份"></el-table-column>
                     <el-table-column align="center" prop="city_exception" label="毕业期望"></el-table-column>
                     <el-table-column align="center" prop="city_sign" label="本届签约"></el-table-column>
                     <el-table-column align="center" prop="city_studentFrom" label="毕业生源"></el-table-column>
@@ -63,7 +64,7 @@
                     <el-pagination background layout="prev, pager, next" :total="total" @current-change="current_change"></el-pagination>
                 </div>
             </el-card>
-        </el-main>
+        </div>
     </el-container>
 </template>
 
@@ -91,6 +92,8 @@ export default {
                 //城市分级
                 digitalClassification: 0,
             },
+            //加载
+            eduLoading: true,
         }
     },
     methods: {
@@ -101,7 +104,7 @@ export default {
         //进行搜索
         search(){
             console.log(this.searchBox.detailDigital);
-            this.$http({
+            this.$ajax({
                 method: "post",
                 url: "http://localhost:8088/testBoot/selectEducationByKeyword",
                 //keyword与后端代码中的局部变量相同
@@ -121,14 +124,16 @@ export default {
             }).then(response => {
                 this.tableData = response.data;
                 this.total = response.data.length;
+                this.eduLoading = false;
                 console.log(response.data);
             },reject =>{
+                this.eduLoading = true;
                 console.log("失败"+reject);
             })
         },
     },
     created() {
-        this.$http({
+        this.$ajax({
             method: "post",
             url: "http://localhost:8088/testBoot/listAll",
             dataType: "json",
@@ -140,18 +145,24 @@ export default {
             this.tableData = resolve.data;
             //将元组总数目设为数据的总数目
             this.total = resolve.data.length;
+            this.eduLoading = false;        
             console.log(resolve.data);
         }, reject => {
+            this.eduLoading = true;
             console.log("失败",reject);
         })
     },
 }
 </script>
 <style scoped>
-    #edu-boxCard {
-        position: relative;
-        border-radius: 10px;
+    #eduHome {
+        width: 100%;
+        margin-top: 1%;        
+    }
+    .edu-boxCard {
+        /* position: relative; */
         text-align: center;
+        border-radius: 10px;
     }
     .el-form-item {
         margin-bottom: 0;
@@ -177,8 +188,13 @@ export default {
         /* border: #cbcaca 1px solid; */
         color: #333;
         margin-top: 1%;
-        border-radius: 10px;
     }
+    /* #elTable {
+        border: 1px solid red;
+    }
+    .el-table-column {
+        width: 75px;
+    } */
     #pagination {
         text-align: center;
     }

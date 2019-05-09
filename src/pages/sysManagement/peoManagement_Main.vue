@@ -1,8 +1,8 @@
 <template>
     <el-container>
-        <el-main>
+        <div id="peoHome">
             <!-- 搜索框部分 -->
-           <el-card id="peoManage">
+           <el-card class="peoManage">
                <div id="ManaTitle">
                     <b>管理员列表</b>
                 </div>
@@ -14,7 +14,6 @@
                                 <el-input v-model="peoSearchBox.searchInput" placeholder="关键字搜索" id="searchIn"></el-input>
                             </el-form-item>
                         </el-col>
-                        <!-- type=“primary”是指本按钮是主要按钮 -->
                         <el-col :span="3">
                             <el-form-item class="searchFormItem">
                                 <el-button type="primary" icon="el-icon-search" @click="search()" plain>搜索</el-button>
@@ -30,9 +29,9 @@
             </el-card>
             
             <!-- 管理员列表 -->
-            <el-card id="peoTable">
+            <el-card class="peoManage" id="peoTable">
                 <!-- 带边框的表格 -->
-                <el-table :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" style="width: 100%" id="peoTable">
+                <el-table v-loading="peoLoading" :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" style="width: 100%" id="peoTable">
                     <el-table-column align="center" prop="name" label="姓名"></el-table-column>
                     <el-table-column align="center" prop="email" label="注册邮箱"></el-table-column>
                     <el-table-column align="center" prop="phonenumber" label="联系方式"></el-table-column>
@@ -85,17 +84,17 @@
                         </el-form-item>
                         <el-form-item prop="pwd" label="密码">
                             <el-col :span="18">
-                                <el-input v-model="addForm.pwd" placeholder="管理员密码" suffix-icon="el-icon-edit"></el-input>
+                                <el-input type="password" v-model="addForm.pwd" placeholder="管理员密码" suffix-icon="el-icon-edit"></el-input>
                             </el-col>
                         </el-form-item>
                         <el-form-item prop="repwd" label="确认密码">
                             <el-col :span="18">
-                                <el-input v-model="addForm.repwd" placeholder="请确认密码" suffix-icon="el-icon-edit"></el-input>
+                                <el-input type="password" v-model="addForm.repwd" placeholder="请确认密码" suffix-icon="el-icon-edit"></el-input>
                             </el-col>
                         </el-form-item>
                         <el-form-item class="dialogBtn">
-                            <el-button type="primary" plain>确定</el-button>
-                            <el-button type="primary" plain>重置</el-button>
+                            <el-button type="primary" plain @click="submit('addForm')">确定</el-button>
+                            <el-button type="primary" plain @click="reset('addForm')">重置</el-button>
                             <el-button type="danger" @click.native="addMananger=false" plain>取消</el-button>
                         </el-form-item>
                     </el-form>
@@ -105,7 +104,7 @@
                     
                 </div> -->
             </el-dialog>
-        </el-main>
+        </div>
     </el-container>
 </template>
 
@@ -175,9 +174,9 @@ export default {
                     { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur'}
                 ],
                 phoneNumber: [
-                    { required: true, massage: '请输入管理员联系方式', trigger: 'blur'},
-                    { type: 'number', message: '请输入正确的联系方式', trigger: 'blur'},
-                    { length: 11, message: '请输入正确的联系方式', trigger: 'blur'}
+                    { required: true, massage: '请输入管理员联系方式'},
+                    { type: 'number', message: '请输入正确的联系方式'}
+                    // { min: 11, max: 11, message: '请输入正确的联系方式', trigger: 'blur'}
                 ],
                 level: [
                     { required: true, message: '请选择管理员的管理级别', trigger: 'blur'}
@@ -190,16 +189,17 @@ export default {
                     { min: 8, message: '密码不能少于8个字符', trigger: 'blur'}
                 ],
                 repwd: [
-                    { required: true, validator: checkRePwd, trigger: blur}
+                    { required: true, validator: checkRePwd, trigger: 'blur'}
                 ]
-            }
+            },
+            peoLoading: true,
         }
     },
     methods: {
         //搜索
         search(){
             console.log(this.peoSearchBox.searchInput);
-            this.$http({
+            this.$ajax({
                 method: "post",
                 url: "http://localhost:8088/testBoot/selectEducationByKeyword",
                 // keyword与后端代码中的局部变量相同
@@ -219,8 +219,10 @@ export default {
             }).then(response => {
                 this.tableData = response.data;
                 this.total = response.data.length;
+                this.peoLoading = false;
                 console.log(response.data);
             },reject =>{
+                this.peoLoading = true;
                 console.log("失败"+reject);
             })
         },
@@ -246,12 +248,62 @@ export default {
         add() {
             this.addManager=true;
         },
+        //分页
         current_change(currentPage){
             this.currentPage = currentPage;
+        },
+        //确定添加
+        submit(addForm){
+            this.$refs[addForm].validate((valid) => {
+                //通过验证
+                if(valid){
+                    alert("ok!");
+                    //此处有一请求
+                    this.$http({
+                        method: "post",
+                        url: "",
+                        data: {
+                            name: this.addForm.name,
+                            email: this.addForm.email,
+                            phone: this.addForm.phoneNumber,
+                            level: this.addForm.level,
+                            account: this.addForm.account,
+                            pwd: this.addForm.pwd,
+                        },
+                        crossDomain: true,
+                        cache: false,
+                        // 加"transformRequest"属性对请求数据进行格式化
+                        transformRequest(obj){
+                            var str = [];
+                            for(var p in obj){
+                                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                            }
+                            return str.join("&");
+                        },
+                    }).then(resolve => {
+                        console.log(resolve);
+                    },reject => {
+                        console.log(reject);
+                    })
+                }
+                else{
+                    // alert("请完善管理员信息");
+                    this.$notify.error({
+                        title: '错误',
+                        message: this.$createElement('i', '请完善管理员信息！'),
+                    });
+                    console.log('信息未填写完整');
+                    return false;
+                }
+            });
+        },
+        //重置
+        reset(addForm){
+            this.$refs[addForm].resetFields();
         }
     },
     created() {
-        this.$http({
+        this.$ajax({
             method: "get",
             url: "../../../static/peopleManager.json",
             dataType: "json",
@@ -261,9 +313,11 @@ export default {
             this.tableData = resolve.data.manager;
             //获取数组长度赋值给total
             this.total = resolve.data.manager.length;
+            this.peoLoading = false;
             console.log(this.total);
             console.log(resolve.data);
         }, reject => {
+            this.peoLoading = true;
             console.log(reject);
         })
     }
@@ -271,7 +325,11 @@ export default {
 </script>
 
 <style scoped>
-    #peoManage {
+    #peoHome {
+        width: 100%;
+        margin-top: 1%;
+    }
+    .peoManage {
         text-align: center;
         border-radius: 10px;
     }
@@ -290,24 +348,28 @@ export default {
         font-size: 125%;
         margin-bottom: 1.7%;
     }
+    #addbutton {
+        text-align: right;
+    }
     .dialogBtn {
         text-align: right;
     }
     #peoTable {
         margin-top: 1%;
-        border-radius: 10px;
     }
     #pagination {
         text-align: center;
     }
     #ManagerInfor {
-        width: 70%;
+        /* width: 100%; */
         margin: 0 auto;
+        /* border: 1px solid red; */
+        padding: 0%;
     }
     #dialogMiddle {
-        /* border: 1px solid red; */
         width: 85%;
         margin: 0 auto;
+        
     }
     /* dialog label与input框之间的间隔增大 */
     .el-form-item__label {
