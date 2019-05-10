@@ -30,6 +30,30 @@
                                 <el-button type="primary" icon="el-icon-search" @click="search()" plain>检索</el-button>
                             </el-form-item>
                         </el-col>
+                        <el-col :span="9" id="dateIn">
+                            <el-upload  
+                            name="fileName" 
+                            ref="upload" 
+                            action="http://localhost:8080/fileUpload" 
+                            :auto-upload="false"
+                            :on-success="uploadSuccess"
+                            :on-error="uploadError"
+                            :data="UploadData">
+                                <!-- 再传入一个年份 -->
+                                <el-col :span="5">
+                                    <el-date-picker
+                                        id="choiceYear"
+                                        v-model="UploadData.YEAR"
+                                        type="year"
+                                        placeholder="请选择年份"
+                                        format="yyyy 年"
+                                        value-format="yyyy">
+                                    </el-date-picker>
+                                </el-col>
+                                <el-button slot="trigger" type="primary" plain>选取文件</el-button>
+                                <el-button type="success" @click="submitUpload()" plain>导入</el-button>
+                            </el-upload>
+                        </el-col>
                     </el-row>
                 </el-form>
             </el-card>
@@ -94,6 +118,10 @@ export default {
             },
             //加载
             eduLoading: true,
+            //年份
+            UploadData: {
+                YEAR: '',
+            },
         }
     },
     methods: {
@@ -131,6 +159,17 @@ export default {
                 console.log("失败"+reject);
             })
         },
+        //导入
+        uploadSuccess(response, file, fileList){
+            console.log(response);
+        },
+        uploadError(response, file, fileList){
+            console.log("失败");
+        },
+        submitUpload(){
+            // console.log(this.$refs.upload);
+            this.$refs.upload.submit();
+        }
     },
     created() {
         this.$ajax({
@@ -197,6 +236,14 @@ export default {
     } */
     #pagination {
         text-align: center;
+    }
+    #dateIn {
+        /* border: 1px solid red; */
+        text-align: right;
+    }
+    /* 修改年份框的大小 */
+    .el-date-editor.el-input {
+        width: 154px;
     }
 </style>
 
