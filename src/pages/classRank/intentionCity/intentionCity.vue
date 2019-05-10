@@ -63,7 +63,30 @@
 
         <!-- 列表 -->
         <el-card class="box-card">
-            <el-table class="Table" :data="intentionCity_users.slice((currentPage-1)*pagesize,currentPage*pagesize)" highlight-current-row v-loading="listLoading" @selection-change="selsChange">
+            <el-table id="Table_signcity" :data="citySign" highlight-current-row v-loading="listLoading" @selection-change="selsChange">
+                <el-table-column prop="year" label="年份" >
+                </el-table-column>
+                <el-table-column prop="index" label="序号">
+                </el-table-column>
+                <el-table-column prop="type" label="类型" >
+                </el-table-column>
+                <el-table-column prop="name" label="城市" >
+                </el-table-column>
+                <el-table-column prop="cProvince" label="省份" >
+                </el-table-column>
+                <el-table-column prop="sign" label="签约人数" >
+                </el-table-column>
+                <el-table-column prop="recency" label="签约率" >
+                </el-table-column>
+                <el-table-column prop="expect" label="五年签约数（本）" >
+                </el-table-column>
+                <el-table-column prop="details" label="详细信息">
+                    <router-link to="cityDetails">
+                        <el-button type="text" size="small">查看</el-button>
+                    </router-link>
+                </el-table-column>
+            </el-table>
+            <!-- <el-table class="Table" :data="intentionCity_users.slice((currentPage-1)*pagesize,currentPage*pagesize)" highlight-current-row v-loading="listLoading" @selection-change="selsChange">
 	    		<el-table-column prop="year" label="年份">
                 </el-table-column>
                 <el-table-column type="index" label="序号">
@@ -79,14 +102,14 @@
                 <el-table-column prop="rate" label="意向率">
                 </el-table-column>
                 <el-table-column prop="weight" label="权重分析">
-                </el-table-column>
+                </el-table-column> -->
                 <!-- 查看详细信息 -->
-    			<el-table-column prop="details" label="详细信息" >
+    			<!-- <el-table-column prop="details" label="详细信息" >
 	    			<router-link to="cityDetails">
 					    <el-button type="text" size="small">查看</el-button>
                     </router-link>
 			    </el-table-column>
-		    </el-table>
+		    </el-table> -->
             <!-- 分页 -->
             <el-pagination layout="prev, pager, next" background :total="total" style="text-align:center;margin-top:20px">
 		    </el-pagination>
@@ -137,7 +160,7 @@
     created(){
         this.$ajax({
             method:"get",
-            url:"",
+            url:"http://localhost:8080/city/citySign",
             dataType:"json",
             // 跨域
             crossDomain:true,
@@ -146,7 +169,7 @@
         }).then(resolve => {
             // 收到数据后取消loading
             this.listLoading = false;
-            this.signCity = reslove.data;
+            this.citySign =  resolve.data;
             console.log(resolve)
             //分页设置，将元组总数目设为数据的总数目
             this.total=resolve.data.report.length;

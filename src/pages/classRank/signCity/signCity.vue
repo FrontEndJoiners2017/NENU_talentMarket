@@ -63,29 +63,29 @@
     
         <!-- 签约城市列表 -->
         <el-card class="box-card">
-            <el-table id="Table_signcity" :data="signCity" highlight-current-row v-loading="listLoading" @selection-change="selsChange">
+            <el-table id="Table_signcity" :data="citySign" highlight-current-row v-loading="listLoading" @selection-change="selsChange">
                 <el-table-column prop="year" label="年份" >
                 </el-table-column>
                 <el-table-column prop="index" label="序号">
                 </el-table-column>
                 <el-table-column prop="type" label="类型" >
                 </el-table-column>
-                <el-table-column prop="cName" label="城市" >
+                <el-table-column prop="name" label="城市" >
                 </el-table-column>
                 <el-table-column prop="cProvince" label="省份" >
                 </el-table-column>
-                <el-table-column prop="unit" label="签约单位" >
+                <!-- <el-table-column prop="unit" label="签约单位" > -->
+                <!-- </el-table-column> -->
+                <el-table-column prop="sign" label="签约人数" >
                 </el-table-column>
-                <el-table-column prop="number" label="签约人数" >
+                <el-table-column prop="recency" label="签约率" >
                 </el-table-column>
-                <el-table-column prop="rate" label="签约率" >
+                <!-- <el-table-column prop="weight" label="权重分析" > -->
+                <!-- </el-table-column> -->
+                <el-table-column prop="expect" label="五年签约数（本）" >
                 </el-table-column>
-                <el-table-column prop="weight" label="权重分析" >
-                </el-table-column>
-                <el-table-column prop="undergraduate" label="五年签约数（本）" >
-                </el-table-column>
-                <el-table-column prop="graduater" label="五年签约数（研）" >
-                </el-table-column>
+                <!-- <el-table-column prop="graduater" label="五年签约数（研）" >
+                </el-table-column> -->
                 <!-- 查看详细信息 -->
                 <el-table-column prop="details" label="详细信息">
                     <router-link to="cityDetails">
@@ -105,7 +105,7 @@
         </el-card>
         <!-- 签约率提升列表 -->
         <el-card class="box-card">
-            <el-table id="Table_signrate" :data="signCity" highlight-current-row v-loading="listLoading" @selection-change="selsChange">
+            <el-table id="Table_signrate" :data="signCityRate" highlight-current-row v-loading="listLoading" @selection-change="selsChange">
                 <el-table-column prop="index" label="序号">
                 </el-table-column>
                 <el-table-column prop="city" label="城市">
@@ -171,10 +171,10 @@ export default {
       }
     },
     // 获取数据后渲染
-    created(){
+    created(){;
         this.$ajax({
             method:"get",
-            url:"",
+            url:"http://localhost:8080/city/citySign",
             dataType:"json",
             // 跨域
             crossDomain:true,
@@ -183,7 +183,7 @@ export default {
         }).then(resolve => {
             // 收到数据后取消loading
             this.listLoading = false;
-            this.signCity = reslove.data;
+            this.citySign =  resolve.data;
             console.log(resolve)
             console.log(resolve.data);
         },reject => {
