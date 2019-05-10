@@ -209,7 +209,7 @@ export default {
         }).then(resolve => {
             // 收到数据后取消loading
             this.listLoading = false;
-            this.visitCity = reslove.data;
+            this.visitCity = resolve.data;
             console.log(resolve)
             console.log(resolve.data);
         },reject => {
