@@ -12,7 +12,7 @@
         <!-- 走访信息 -->
         <el-card class="box-card">
             <div  class="text item">
-                <h4>走访信息</h4>
+                <h1>走访信息</h1>
             </div>
                 <el-table
                 :data="interviewTableData"
@@ -187,9 +187,9 @@ export default {
 </script>
 
 <style scoped>
-.text {
+/* .text {
     font-size: 14px;
-}
+} */
 
 .item {
     padding: 18px 0;

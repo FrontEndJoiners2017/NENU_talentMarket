@@ -3,7 +3,7 @@
     <!-- 搜索框 -->
         <el-card class="box-card">
             <div class="text item">
-                <h4>单位详情列表</h4>
+                <h1>单位详情列表</h1>
                 <!-- 远程搜索 -->
                 <el-select
                 v-model="keyWds"
@@ -21,7 +21,7 @@
                     :value="item.value">
                     </el-option>
                 </el-select>
-                <el-button>检索</el-button>
+                <el-button type="primary" icon="el-icon-search" plain>检索</el-button>
             </div>
         </el-card>
         <!-- 表格 -->
@@ -33,68 +33,63 @@
                     <el-table-column
                     prop="num"
                     label="序号"
-                    width="135">
+                    >
                     </el-table-column>
                     <el-table-column
                     prop="name"
                     label="单位名称"
-                    width="135">
+                    >
                     </el-table-column>
                     <el-table-column
                     prop="property"
                     label="单位性质"
-                    width="135">
+                    >
                     </el-table-column>
                     <el-table-column
                     prop="city"
                     label="所在城市"
-                    width="135">
+                    >
                     </el-table-column>
                     <el-table-column
                     prop="province"
                     label="省份"
-                    width="135">
+                    >
                     </el-table-column>
                     <el-table-column
                     prop="interviewTimes"
                     label="历年走访次数"
-                    width="135">
+                    >
                     </el-table-column>
                     <el-table-column
                     prop="speechTimes"
                     label="来校宣讲次数"
-                    width="135">
+                    >
                     </el-table-column>
                     <el-table-column
                     prop="signedNum"
                     label="历年签约人数"
-                    width="135">
+                    >
                     </el-table-column>
                     <el-table-column
                     prop="details"
                     label="详细信息"
-                    width="135">
-                        <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                            <router-link to="caseAnalysisDetails">
-                                <el-button type="text" size="small">
-                                    查看
-                                </el-button>
-                            </router-link>
+                    >
+                      <router-link to="caseAnalysisDetails">
+                        <el-button type="text" size="small">
+                            查看
+                        </el-button>
+                      </router-link>
                     </el-table-column>
                 </el-table>
-            </div>
-        </el-card>
-        <!-- 分页 -->
-        <el-card class="box-card">
-            <div class="text item">
+                <!-- 分页 -->
                 <el-pagination
-                :page-size="20"
-                :pager-count="11"
-                layout="prev, pager, next"
-                :total="1000">
+                  background
+                  layout="prev, pager, next"
+                  :total="1000">
                 </el-pagination>
             </div>
         </el-card>
+        
     </div>
 </template>
 
@@ -193,9 +188,9 @@ body{
 }
 
 /* 卡片 */
-.text {
+/* .text {
     font-size: 14px;
-}
+} */
 .item {
     padding: 18px 0;
 }

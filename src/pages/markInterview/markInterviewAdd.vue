@@ -53,8 +53,8 @@
              <el-input type="textarea" v-model="form.summary"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="onSubmit">确定添加</el-button>
-              <el-button>取消</el-button>
+              <el-button type="primary" @click="onSubmit" plain>确定</el-button>
+              <el-button type="info" plain>取消</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -120,9 +120,9 @@ body{
   /* line-height: 160px; */
 }
 /* 卡片 */
-.text {
+/* .text {
     font-size: 14px;
-}
+} */
 
 .item {
     padding: 18px 0;
