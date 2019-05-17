@@ -4,7 +4,7 @@
         <el-card class="box-card">
 			<el-form :inline="true" :model="filters" ref="">  <!-- inline行内的表单域;model表单数据对象,ref数据来自的表格 -->
 				<div id="Search">
-                    <h1>签约城市排名检索</h1>
+                    <span id="TopTitle">签约城市排名检索</span>
                     <el-button type="primary" class="search" icon="el-icon-search" plain v-on:click="find">检索</el-button>
 				</div>
 				<el-form-item>
@@ -100,11 +100,11 @@
 
 
         <!-- 签约率提升表头 -->
-        <el-card class="box-card">
-            <h1 >签约率显著提升城市排名（对比于上一年）</h1>
-        </el-card>
+        <!-- <el-card class="box-card">
+            <span id="TopTitle1">签约率显著提升城市排名（对比于上一年）</span>
+        </el-card> -->
         <!-- 签约率提升列表 -->
-        <el-card class="box-card">
+        <!-- <el-card class="box-card">
             <el-table id="Table_signrate" :data="signCityRate" highlight-current-row v-loading="listLoading" @selection-change="selsChange">
                 <el-table-column prop="index" label="序号">
                 </el-table-column>
@@ -122,11 +122,11 @@
                 </el-table-column>
                 <el-table-column prop="grow" label="提升">
                 </el-table-column>
-            </el-table>
+            </el-table> -->
             <!-- 签约率提升分页 -->
-            <el-pagination layout="prev, pager, next" background :total="1000" style="text-align:center;margin-top:20px">
+            <!-- <el-pagination layout="prev, pager, next" background :total="1000" style="text-align:center;margin-top:20px">
             </el-pagination>
-        </el-card>
+        </el-card> -->
     </div>
 </template>
 
@@ -208,4 +208,19 @@ h1{
 .box-card{
     width:100%;
 }
+
+/* 标题 */
+
+#TopTitle {
+        position: relative;
+        text-align: left;
+        font-size: 19px;
+        margin-bottom: 1.7%;
+    }
+#TopTitle1 {
+        position: relative;
+        text-align: left;
+        font-size: 19px;
+        margin-bottom: 1.7%;
+    }
 </style>
