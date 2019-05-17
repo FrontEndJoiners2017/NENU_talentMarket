@@ -4,7 +4,7 @@
         <el-card class="box-card">
 			<el-form :inline="true" :model="filters" ref="" >  <!-- inline行内的表单域;model表单数据对象,ref数据来自的表格 -->
 				<div id="Search">
-                    <h1>意向城市排名检索</h1>
+                    <span id="TopTitle">意向城市排名检索</span>
                     <el-button type="primary" icon="el-icon-search" plain v-on:click="find" class="search">检索</el-button>
 				</div>
 				<el-form-item>
@@ -196,4 +196,12 @@ h1{
 .box-card{
     width:100%;
 }
+
+/* 标题 */
+#TopTitle {
+        position: relative;
+        text-align: left;
+        font-size: 19px;
+        margin-bottom: 1.7%;
+    }
 </style>
