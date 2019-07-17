@@ -11,7 +11,7 @@
                     <el-row>
                         <el-col :span="5">
                             <el-form-item prop="searchInput" class="searchFormItem">
-                                <el-input v-model="peoSearchBox.searchInput" placeholder="关键字搜索" id="searchIn"></el-input>
+                                <el-input v-model="peoSearchBox.searchInput" placeholder="搜索名字" id="searchIn"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="3">
@@ -21,7 +21,7 @@
                         </el-col>
                         <el-col :span="15" id="addbutton">
                             <el-form-item class="searchFormItem">
-                                <el-button type="primary" icon="el-icon-plus" @click.native="addMananger=true" plain>添加管理员</el-button>
+                                <el-button v-if="mainAdmin" type="primary" icon="el-icon-plus" @click.native="addMananger=true" plain>添加管理员</el-button>
                             </el-form-item>                        
                         </el-col>
                     </el-row>
@@ -32,13 +32,14 @@
             <el-card class="peoManage" id="peoTable">
                 <!-- 带边框的表格 -->
                 <el-table v-loading="peoLoading" :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" style="width: 100%" id="peoTable">
-                    <el-table-column align="center" prop="name" label="姓名"></el-table-column>
+                    <el-table-column align="center" prop="realname" label="姓名"></el-table-column>
                     <el-table-column align="center" prop="email" label="注册邮箱"></el-table-column>
-                    <el-table-column align="center" prop="phonenumber" label="联系方式"></el-table-column>
-                    <el-table-column align="center" prop="identity" label="身份"></el-table-column>
-                    <el-table-column align="center" prop="operation" label="操作">
-                        <el-button type="danger" icon="el-icon-delete" title="删除" @click="dele" circle plain></el-button>
-                        <!-- <el-button type="danger" icon="el-icon-delete" title="删除" @click="dele" plain>删除</el-button> -->
+                    <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+                    <el-table-column align="center" prop="role" label="身份"></el-table-column>
+                    <el-table-column v-if="mainAdmin" align="center" prop="operation" label="操作">
+                        <template slot-scope="scope">
+                            <el-button type="danger" icon="el-icon-delete" title="删除" @click.native.prevent="dele(scope.$index)" circle plain></el-button>
+                        </template>
                     </el-table-column>
                 </el-table>
                 <div id="pagination">
@@ -54,19 +55,18 @@
                 <!-- 设定提示文字所在的位置的大小 -->
                     <el-form :model="addForm" :rules="addRules" ref="addForm" label-width="100px">
                         <el-form-item prop="name" label="姓名">
-                            <el-col :span="15">
-                            <!-- 在input框后（内后）添加edit图标 -->
-                                <el-input v-model="addForm.name" placeholder="管理员姓名" suffix-icon="el-icon-edit"></el-input>
+                            <el-col :span="10">
+                                <el-input v-model="addForm.name" placeholder="管理员姓名" suffix-icon="el-icon-s-custom"></el-input>
                             </el-col>
                         </el-form-item>
                         <el-form-item prop="email" label="邮箱">
-                            <el-col :span="18">
-                                <el-input v-model="addForm.email" placeholder="管理员邮箱" suffix-icon="el-icon-edit"></el-input>
+                            <el-col :span="15">
+                                <el-input v-model="addForm.email" placeholder="管理员邮箱" suffix-icon="el-icon-message"></el-input>
                             </el-col>
                         </el-form-item>
                         <el-form-item prop="phoneNumber" label="联系方式">
                             <el-col :span="15">
-                                <el-input v-model="addForm.phoneNumber" placeholder="管理员联系方式" suffix-icon="el-icon-edit"></el-input>
+                                <el-input v-model="addForm.phoneNumber" placeholder="管理员联系方式" suffix-icon="el-icon-phone"></el-input>
                             </el-col>
                         </el-form-item>
                         <el-form-item prop="level" label="管理级别">
@@ -78,18 +78,18 @@
                             </el-col>
                         </el-form-item>
                         <el-form-item prop="account" label="账号">
-                            <el-col :span="18">
-                                <el-input v-model="addForm.account" placeholder="管理员账号" suffix-icon="el-icon-edit"></el-input>
+                            <el-col :span="15">
+                                <el-input v-model="addForm.account" placeholder="管理员账号" suffix-icon="el-icon-user-solid"></el-input>
                             </el-col>
                         </el-form-item>
                         <el-form-item prop="pwd" label="密码">
-                            <el-col :span="18">
-                                <el-input type="password" v-model="addForm.pwd" placeholder="管理员密码" suffix-icon="el-icon-edit"></el-input>
+                            <el-col :span="15">
+                                <el-input type="password" v-model="addForm.pwd" placeholder="管理员密码" suffix-icon="el-icon-key"></el-input>
                             </el-col>
                         </el-form-item>
                         <el-form-item prop="repwd" label="确认密码">
-                            <el-col :span="18">
-                                <el-input type="password" v-model="addForm.repwd" placeholder="请确认密码" suffix-icon="el-icon-edit"></el-input>
+                            <el-col :span="15">
+                                <el-input type="password" v-model="addForm.repwd" placeholder="请确认密码" suffix-icon="el-icon-coordinate"></el-input>
                             </el-col>
                         </el-form-item>
                         <el-form-item class="dialogBtn">
@@ -109,7 +109,36 @@
 </template>
 
 <script>
+//引入验证手机号码函数
+import {isvalidPhone} from '../../../config/verifingPhoneNumber'
+//引入验证邮箱函数
+import {isvalidEmail} from '../../../config/verifingEmail'
 
+//定义全局变量
+//手机号码验证
+var validPhone = (rule, value, callback)=> {
+    if(!value) {
+        callback(new Error('请输入联系方式'));
+    }
+    else if(!isvalidPhone(value)) {
+        callback(new Error('请输入正确的联系方式'));
+    }
+    else {
+        callback();
+    }
+};
+//邮箱验证
+var validEmail = (rule, value, callback)=> {
+    if(!value) {
+        callback(new Error('请输入邮箱'));
+    }
+    else if(!isvalidEmail(value)) {
+        callback(new Error('请输入正确的邮箱'));
+    }
+    else {
+        callback();
+    }
+};
 export default {
     name: 'peoManage_Main',
     data() {
@@ -133,6 +162,8 @@ export default {
             peoSearchBox: {
                 searchInput: '',
             },
+            //主管理员才能进行增加和删除管理员的操作
+            mainAdmin: true,
             // 新增遮罩是否显示
             addMananger: false,
             addManagerModel: false,
@@ -161,7 +192,7 @@ export default {
                 value: '1',
                 label: '主管理员'
             },{
-                value: '2',
+                value: '0',
                 label: '管理员'
             }],
             //判空
@@ -170,13 +201,10 @@ export default {
                     { required: true, message: '请输入管理员姓名', trigger: 'blur'}
                 ],
                 email: [
-                    { required: true, message: '请输入管理员邮箱', trigger: 'blur'},
-                    { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur'}
+                    { required: true, validator: validEmail, trigger: 'blur'},
                 ],
                 phoneNumber: [
-                    { required: true, massage: '请输入管理员联系方式'},
-                    { type: 'number', message: '请输入正确的联系方式'}
-                    // { min: 11, max: 11, message: '请输入正确的联系方式', trigger: 'blur'}
+                    { required: true, validator: validPhone, trigger: 'blur'},
                 ],
                 level: [
                     { required: true, message: '请选择管理员的管理级别', trigger: 'blur'}
@@ -227,22 +255,61 @@ export default {
             })
         },
         // 删除
-        dele() {
+        dele(index) {
+            // this.$ajax
             this.$confirm('是否确认删除该管理员？','提示',{
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
             }).then(() => {
-                this.$message({
-                    type: 'success',
-                    message: '删除成功！'
-                });
+                console.log(index)
+                //删除请求 传递列表id
+                this.$ajax({
+                   method: psot,
+                   url: "",
+                   data: index,
+                    crossDomain: true,
+                    cache: false,
+                    // 加"transformRequest"属性对请求数据进行格式化
+                    transformRequest(obj){
+                        var str = [];
+                        for(var p in obj){
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        }
+                        return str.join("&");
+                    },
+                // ajax的then
+                }).then(response => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功！'
+                    });
+                    // 再重新请求列表
+                    this.$ajax({
+                        method: "get",
+                        url: "../../../static/peopleManager.json",
+                        dataType: "json",
+                        crossDomain: true,
+                        cache: false,
+                    }).then(resolve => {
+                        this.tableData = resolve.data.manager;
+                        //获取数组长度赋值给total
+                        this.total = resolve.data.manager.length;
+                        this.peoLoading = false;
+                        console.log(this.total);
+                        console.log(resolve.data);
+                    }, reject => {
+                        this.peoLoading = true;
+                        console.log(reject);
+                    }) //重新请求列表结束
+                }) //ajax的then end
+            //confirm的then end
             }).catch(() => {
                 this.$message({
                     type: 'info',
                     message: '已取消删除'
                 });
-            });
+            }); //catch end
         },
         // 显示新增遮罩
         add() {
@@ -255,20 +322,31 @@ export default {
         //确定添加
         submit(addForm){
             this.$refs[addForm].validate((valid) => {
+                console.log(this.addForm.name);
+                console.log(this.addForm.email);
+                console.log(this.addForm.phoneNumber);
+                console.log(this.addForm.level);
+                console.log(this.addForm.account);
+                console.log(this.addForm.pwd);
                 //通过验证
                 if(valid){
-                    alert("ok!");
+                    this.$notify({
+                        title: '成功',
+                        message: '提交成功',
+                        type: 'success'
+                    });
+                    this.addMananger = false;
                     //此处有一请求
-                    this.$http({
+                    this.$ajax({
                         method: "post",
-                        url: "",
+                        url: "http://10.108.66.164:8080/addUser",
                         data: {
-                            name: this.addForm.name,
+                            realname: this.addForm.name,
                             email: this.addForm.email,
-                            phone: this.addForm.phoneNumber,
-                            level: this.addForm.level,
-                            account: this.addForm.account,
-                            pwd: this.addForm.pwd,
+                            tel: this.addForm.phoneNumber,
+                            role: this.addForm.level,
+                            username: this.addForm.account,
+                            password: this.addForm.pwd,
                         },
                         crossDomain: true,
                         cache: false,
@@ -285,7 +363,7 @@ export default {
                     },reject => {
                         console.log(reject);
                     })
-                }
+                }//end if
                 else{
                     // alert("请完善管理员信息");
                     this.$notify.error({
@@ -294,7 +372,7 @@ export default {
                     });
                     console.log('信息未填写完整');
                     return false;
-                }
+                }//end else
             });
         },
         //重置
@@ -305,14 +383,14 @@ export default {
     created() {
         this.$ajax({
             method: "get",
-            url: "../../../static/peopleManager.json",
+            url: "http://10.108.66.164:8080/listAll",
             dataType: "json",
             crossDomain: true,
             cache: false,
         }).then(resolve => {
-            this.tableData = resolve.data.manager;
+            this.tableData = resolve.data;
             //获取数组长度赋值给total
-            this.total = resolve.data.manager.length;
+            this.total = resolve.data.length;
             this.peoLoading = false;
             console.log(this.total);
             console.log(resolve.data);

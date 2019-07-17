@@ -14,18 +14,15 @@
                                 <el-input v-model="searchBox.searchInput" placeholder="关键字搜索" id="searchIn"></el-input>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="3">
-                            <el-form-item prop="detailDigital">
-                            <!-- el-checkbox的返回值为 true 或 false -->
-                                <el-checkbox v-model="searchBox.detailDigital" label="详细数据" ></el-checkbox>
+                        <el-col :span="4">
+                            <el-form-item prop="detailOrClassification">
+                                <el-radio-group v-model="radio">
+                                    <el-radio v-model="radio" :label="3" @click.native.prevent="clickitem(3)">详细数据</el-radio>
+                                    <el-radio v-model="radio" :label="6" @click.native.prevent="clickitem(6)">数据分级</el-radio>
+                                </el-radio-group>
                             </el-form-item>
                         </el-col>
                         <el-col :span="2">
-                            <el-form-item prop="digitalClassification">
-                                <el-checkbox v-model="searchBox.digitalClassification" label="数据分级" ></el-checkbox>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="5">
                             <el-form-item>
                                 <el-button type="primary" icon="el-icon-search" @click="search()" plain>检索</el-button>
                             </el-form-item>
@@ -74,6 +71,8 @@ export default {
     data() {
         return{
             input: '',
+            //详细数据/数据分级
+            radio: '0',
             tableData: [],
             //当前页数
             currentPage: 1,
@@ -86,16 +85,24 @@ export default {
             searchBox: {
                 //搜索输入框
                 searchInput: '',
-                //详细数据
-                detailDigital: 0,
-                //城市分级
-                digitalClassification: 0,
+                //详细数据/数据分级
+                detailOrClassification: '',
             },
             //加载
             nonLoading: true,
         }
     },
     methods: {
+        //再次点击取消选中
+        clickitem(e) {
+            // e === this.radio? this.radio = '0' : this.radio = e;
+            if(e === this.radio) {
+                this.radio = '0';
+            }
+            else {
+                this.radio = e;
+            }
+        },
         //传入分页的当前页，令定义的当前页=分页的当前页
         current_change(currentPage){
             this.currentPage = currentPage;
@@ -109,6 +116,7 @@ export default {
                 //keyword与后端代码中的局部变量相同
                 data:{
                     keyword: this.searchBox.searchInput,
+                    // radi: this.radio,
                 },
                 crossDomain: true,
                 cache: false,
