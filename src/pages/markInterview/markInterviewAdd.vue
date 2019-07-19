@@ -26,15 +26,77 @@
               <el-input v-model="form.stamp"></el-input>
             </el-form-item>
             <el-form-item label="走访情况">
-              <!-- <i class="el-icon-circle-plus"></i> -->
               <br>
-              <span>联系人</span>
-              <span>职务</span>
-              <span>手机</span>
-              <span>固话</span>
-              <span>EMAIL</span>
-              <span>微信/QQ</span>
+              <!-- 增加 -->
+              <el-button type="primary" @click="addRow(viewTableData)">新增</el-button>
+              <!-- 走访情况表格 -->
+                <el-table :data="viewTableData" style="width: 100%">
+                <el-table-column prop="contact" label="联系人" width="180">
+                    <template slot-scope="scope">
+                      <!-- <el-form :model="scope.row" :rules="rules">
+                        <el-form-item prop="contact"> -->
+                          <el-input v-model="scope.row.contact" placeholder="姓名"></el-input>
+                        <!-- </el-form-item>
+                      </el-form> -->
+                    </template>
+                </el-table-column>
+                <el-table-column prop="position" label="职务" width="180">
+                  <template slot-scope="scope">
+                      <!-- <el-form :model="scope.row" :rules="rules">
+                        <el-form-item prop="position"> -->
+                          <el-input v-model="scope.row.position" placeholder="职务"></el-input>
+                        <!-- </el-form-item>
+                      </el-form> -->
+                    </template>
+                </el-table-column>
+                <el-table-column prop="phoneNum" label="手机">
+                  <template slot-scope="scope">
+                      <!-- <el-form :model="scope.row" :rules="rules">
+                        <el-form-item prop="phoneNum"> -->
+                          <el-input v-model="scope.row.phoneNum" placeholder="手机号码"></el-input>
+                        <!-- </el-form-item>
+                      </el-form> -->
+                    </template>
+                </el-table-column>
+                <el-table-column prop="fixedPhone" label="固话">
+                  <template slot-scope="scope">
+                      <!-- <el-form :model="scope.row" :rules="rules">
+                        <el-form-item prop="fixedPhone"> -->
+                          <el-input v-model="scope.row.fixedPhone" placeholder="固话"></el-input>
+                        <!-- </el-form-item>
+                      </el-form> -->
+                    </template>
+                </el-table-column>
+                <el-table-column prop="email" label="EMAIL">
+                  <template slot-scope="scope">
+                      <!-- <el-form :model="scope.row" :rules="rules">
+                        <el-form-item prop="email"> -->
+                          <el-input v-model="scope.row.email" placeholder="邮箱"></el-input>
+                        <!-- </el-form-item>
+                      </el-form> -->
+                    </template>
+                </el-table-column>
+                <el-table-column prop="wechat" label="微信/QQ">
+                  <template slot-scope="scope">
+                      <!-- <el-form :model="scope.row" :rules="rules">
+                        <el-form-item prop="wechat"> -->
+                          <el-input v-model="scope.row.wechat" placeholder="微信/QQ"></el-input>
+                        <!-- </el-form-item>
+                      </el-form> -->
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <!-- <el-form :model="scope.row">
+                        <el-form-item> -->
+                          <el-button @click.native.prevent="deleteRow(scope.$index, viewTableData)" size="small">删除</el-button>
+                        <!-- </el-form-item>
+                      </el-form> -->
+                    </template>
+                </el-table-column>
+              </el-table>
             </el-form-item>
+
             <el-form-item label="参会意向">
               <el-checkbox-group v-model="form.type">
               <el-checkbox label="秋季非师范毕业生专场" name="type"></el-checkbox>
@@ -76,14 +138,24 @@ export default {
           type: [],
           feedback: '',
           summary:'',
-        }
+        },
+        // 走访表格
+        viewTableData:[],
       }
     },
     methods: {
-      onSubmit() {
-        console.log('submit!');
+      deleteRow(index, rows) {//删除改行
+        rows.splice(index, 1);
+      },
+     addRow(tableData,event){
+       tableData.push({ contact: '',position:'',phoneNum:'',fixedPhone:'',email:'',wechat:''
+        })
+     },
+      onSubmit(){
+        console.log("submit!")
       }
-    }
+
+    }//methods结束
   }
 </script>
 

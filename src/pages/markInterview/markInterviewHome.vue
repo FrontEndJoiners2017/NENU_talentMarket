@@ -3,11 +3,12 @@
   <!-- 搜索框 -->
   <el-card class="box-card">
     <div class="text item">
-      <h1>市场走访详细信息列表</h1>
+      <h1 style="display:inline-block">市场走访详细信息列表</h1>
       <!-- 普通按钮 -->
       <router-link :to="{name:'markInterviewAdd'}">
         <el-button>添加信息</el-button>
       </router-link>
+      <br>
       <!-- 下拉列表 -->
       <el-select v-model="year" placeholder="请选择">
         <el-option
@@ -63,11 +64,11 @@
         label="所在城市"
         >
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         prop="province"
         label="省份"
         >
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         prop="contacts"
         label="走访联系人"
@@ -119,11 +120,10 @@ export default {
             name: '',
             property: '',
             city:'',
-            province:'',
+            // province:'',
             contacts:'',
             staff:'',
             method:'',
-            details:''
           }],
           // 远程搜索部分
           options: [],
