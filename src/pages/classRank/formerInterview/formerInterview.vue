@@ -14,7 +14,7 @@
                         <el-col :span="5">
                             <!-- 教育/非教育类型选择 -->
                             <el-form-item prop="kind">
-                                <el-select v-model="searchBox.kind" placeholder="请选择类型">
+                                <el-select @change="changeKind" v-model="searchBox.kind" placeholder="请选择类型">
                                     <el-option v-for="item in optionsKind" :key="item.value" :label="item.label" :value="item.value"></el-option>
                                 </el-select>
                             </el-form-item>
@@ -26,7 +26,7 @@
                         </el-col>
                         <el-col :span="5">
                             <el-form-item prop="weight">
-                                <el-select v-model="searchBox.weight" placeholder="请选择权重">
+                                <el-select @change="changeWeight" v-model="searchBox.weight" placeholder="请选择权重">
                                     <el-option v-for="item in optionsWeight" :key="item.value" :label="item.label" :value="item.value"></el-option>
                                 </el-select>
                             </el-form-item>
@@ -40,13 +40,17 @@
             
             <!-- 表格 -->
             <el-card class="view-boxCard viewTable"  v-if="normal">
-                <el-table v-loading="viewLoading" :data="tableData1.slice((currentPage1-1)*pagesize,currentPage1*pagesize)" style="width: 100%" id="elTable">
+                 <el-table v-loading="viewLoading" :data="tableData1.slice((currentPage1-1)*pagesize,currentPage1*pagesize)" style="width: 100%" id="elTable">
                     <!-- 创建表格各列 -->
-                    <el-table-column align="center" prop="id" label="序号"></el-table-column>
-                    <el-table-column align="center" prop="city_score" label="类型"></el-table-column>
+                    <el-table-column align="center" label="序号" type="index" width="150px">
+                        <template slot-scope="scope">
+                            <span>{{(currentPage1 - 1) * pagesize + scope.$index + 1}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" prop="education_yon" label="类型"></el-table-column>
                     <el-table-column align="center" prop="city_name" label="城市"></el-table-column>
                     <el-table-column align="center" prop="province" label="省份"></el-table-column>
-                    <el-table-column align="center" prop="city_exception" label="走访c次数"></el-table-column>
+                    <el-table-column align="center" prop="city_exception" label="走访次数"></el-table-column>
                     <el-table-column align="center" prop="city_grading" label="权重分析"></el-table-column>
                     <el-table-column align="center" label="详细信息">
                         <template slot-scope="scope">
@@ -118,7 +122,11 @@
                 </el-form>
                 <el-table v-loading="detailLoading" :data="tableData2.slice((currentPage2-1)*pagesize,currentPage2*pagesize)" style="width: 100%" id="elTable">
                     <!-- 创建表格各列 -->
-                    <el-table-column align="center" prop="id" label="序号"></el-table-column>
+                    <el-table-column align="center" label="序号" type="index">
+                        <template slot-scope="scope">
+                            <span>{{(currentPage - 1) * pagesize + scope.$index + 1}}</span>
+                        </template>
+                    </el-table-column>
                     <el-table-column align="center" prop="city_score" label="单位名称"></el-table-column>
                     <el-table-column align="center" prop="city_name" label="单位性质"></el-table-column>
                     <el-table-column align="center" prop="province" label="年份"></el-table-column>
@@ -165,6 +173,9 @@ export default {
                 //权重
                 weight: ''
             },
+            //搜索变量
+            searchKind: 100,
+            searchWeight: '',
             //教育/非教育类的option
             optionsKind: [
                 {
@@ -265,42 +276,79 @@ export default {
         //传入分页的当前页，令定义的当前页=分页的当前页
         //第一个表格
         current_change1(currentPage){
-            this.currentPage = currentPage1;
+            this.currentPage1 = currentPage;
         },
         //详细信息
         current_change2(currentPage){
-            this.currentPage = currentPage2;
+            this.currentPage2 = currentPage;
         },
 
+        //搜索选择器
+        changeKind(change) {
+            //教育类
+            if(change == 1) {
+                this.searchKind = 1
+            }
+            //非教育类
+            else if(change == 2) {
+                this.searchKind = 0
+            }
+        },
+        changeWeight(change) {
+            if(change == 1) {
+                this.searchWeight = "A";
+            }
+            else if(change == 2) {
+                this.searchWeight = "B";
+            }
+            else if(change == 3) {
+                this.searchWeight = "C";
+            }
+            else if(change == 4) {
+                this.searchWeight = "D";
+            }
+        },
         //进行搜索
         search(){
-            console.log(this.searchBox.detailDigital);
-            this.$ajax({
-                method: "post",
-                url: "http://localhost:8088/testBoot/selectEducationByKeyword",
-                //keyword与后端代码中的局部变量相同
-                data:{
-                    keyword: this.searchBox.searchInput,
-                },
-                crossDomain: true,
-                cache: false,
-                // 加"transformRequest"属性对请求数据进行格式化
-                transformRequest(obj){
-                    var str = [];
-                    for(var p in obj){
-                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                    }
-                    return str.join("&");
-                },
-            }).then(response => {
-                this.tableData = response.data;
-                this.total = response.data.length;
-                this.classifyLoading = false;
-                console.log(response.data);
-            },reject =>{
-                this.classifyLoading = true;
-                console.log("失败"+reject);
-            })
+            console.log(this.searchKind,  this.searchBox.searchInput, this.searchWeight);
+            //判断检索条件是否为空
+            if((this.searchKind == 100) || (this.searchBox.searchInput == '') || (this.searchWeight =='')) {
+                this.$notify.error({
+                    title: '错误',
+                    message: '请完善检索条件！'
+                });
+            }
+            else {
+                this.$ajax({
+                    method: "post",
+                    url: "http://47.103.10.220:8081/visit/queryVisitByKeyword",
+                    //keyword与后端代码中的局部变量相同
+                    data:{
+                        education_yon: this.searchKind,
+                        city_name: this.searchBox.searchInput,
+                        city_visit: this.searchWeight,
+                    },
+                    crossDomain: true,
+                    cache: false,
+                    // 加"transformRequest"属性对请求数据进行格式化
+                    transformRequest(obj){
+                        var str = [];
+                        for(var p in obj){
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        }
+                        return str.join("&");
+                    },
+                }).then(resolve => {
+                    console.log(resolve);
+                    // this.tableData = response.data;
+                    // this.total = response.data.length;
+                    // this.classifyLoading = false;
+                    // console.log(response.data);
+                },reject =>{
+                    this.viewLoading = true;
+                    console.log("失败"+reject);
+                });
+            }
         },
         //查看详情
         detialInfor(scope) {
@@ -310,20 +358,20 @@ export default {
     created() {
         this.$ajax({
             method: "post",
-            url: "http://localhost:8088/testBoot/listAll",
+            url: "http://47.103.10.220:8081/visit/listAllVisit",
             dataType: "json",
             //跨域
             crossDomain: true,
             //保证每次请求得到的数据都是最新的而不是缓存的数据
             cache: false,
         }).then(resolve => {
-            this.tableData = resolve.data;
+            this.tableData1 = resolve.data;
             //将元组总数目设为数据的总数目
-            this.total = resolve.data.length;
-            this.classifyoading = false;        
+            this.total1 = resolve.data.length;
+            this.viewLoading = false;        
             console.log(resolve.data);
         }, reject => {
-            this.classifyLoading = true;
+            this.viewLoading = true;
             console.log("失败",reject);
         })
     },

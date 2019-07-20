@@ -330,11 +330,6 @@ export default {
                 console.log(this.addForm.pwd);
                 //通过验证
                 if(valid){
-                    this.$notify({
-                        title: '成功',
-                        message: '提交成功',
-                        type: 'success'
-                    });
                     this.addMananger = false;
                     //此处有一请求
                     this.$ajax({
@@ -360,6 +355,11 @@ export default {
                         },
                     }).then(resolve => {
                         console.log(resolve);
+                        this.$notify({
+                            title: '成功',
+                            message: '提交成功',
+                            type: 'success'
+                        });
                     },reject => {
                         console.log(reject);
                     })

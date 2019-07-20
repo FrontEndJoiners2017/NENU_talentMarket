@@ -16,9 +16,9 @@
                         </el-col>
                         <el-col :span="4">
                             <el-form-item prop="detailOrClassification">
-                                <el-radio-group v-model="radio">
-                                    <el-radio v-model="radio" :label="3" @click.native.prevent="clickitem(3)">详细数据</el-radio>
-                                    <el-radio v-model="radio" :label="6" @click.native.prevent="clickitem(6)">数据分级</el-radio>
+                                <el-radio-group  @change="changeRadio" v-model="radio">
+                                    <el-radio v-model="radio" :label="3" >详细数据</el-radio>
+                                    <el-radio v-model="radio" :label="6" >数据分级</el-radio>
                                 </el-radio-group>
                             </el-form-item>
                         </el-col>
@@ -68,8 +68,12 @@
                 -->
                 <el-table v-loading="eduLoading" :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" style="width: 100%" id="elTable">
                     <!-- 创建表格各列 -->
-                    <el-table-column align="center" prop="year" label="年份"></el-table-column>
-                    <el-table-column align="center" prop="id" label="序号"></el-table-column>
+                    <el-table-column align="center" prop="city_year" label="年份"></el-table-column>
+                    <el-table-column align="center" label="序号" type="index">
+                        <template slot-scope="scope">
+                            <span>{{(currentPage - 1) * pagesize + scope.$index + 1}}</span>
+                        </template>
+                    </el-table-column>
                     <el-table-column align="center" prop="city_name" label="城市"></el-table-column>
                     <el-table-column align="center" prop="province" label="省份"></el-table-column>
                     <el-table-column align="center" prop="city_exception" label="毕业期望"></el-table-column>
@@ -113,6 +117,8 @@ export default {
                 //详细数据/数据分级
                 detailOrClassification: '',
             },
+            //搜索单选变量
+            radioSelected: 0,
             //加载
             eduLoading: true,
             //年份
@@ -122,49 +128,88 @@ export default {
         }
     },
     methods: {
-        //再次点击取消选中
-        clickitem(e) {
-            // e === this.radio? this.radio = '0' : this.radio = e;
-            if(e === this.radio) {
-                this.radio = '0';
-            }
-            else {
-                this.radio = e;
-            }
-        },
         //传入分页的当前页，令定义的当前页=分页的当前页
         current_change(currentPage){
             this.currentPage = currentPage;
         },
+        //单选选中
+        changeRadio(change) {
+            this.radioSelected = change;
+            // console.log(this.radioSelected);
+        },
         //进行搜索
         search(){
-            console.log(this.searchBox.detailDigital);
-            this.$ajax({
-                method: "post",
-                url: "http://localhost:8088/testBoot/selectEducationByKeyword",
-                //keyword与后端代码中的局部变量相同
-                data:{
-                    keyword: this.searchBox.searchInput,
-                },
-                crossDomain: true,
-                cache: false,
-                // 加"transformRequest"属性对请求数据进行格式化
-                transformRequest(obj){
-                    var str = [];
-                    for(var p in obj){
-                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                    }
-                    return str.join("&");
-                },
-            }).then(response => {
-                this.tableData = response.data;
-                this.total = response.data.length;
-                this.eduLoading = false;
-                console.log(response.data);
-            },reject =>{
-                this.eduLoading = true;
-                console.log("失败"+reject);
-            })
+            //搜索要判断是需要检索详细数还是检索数据分级
+            console.log(this.radioSelected);
+            //必须详细数据 或者 数据分级
+            if(this.radioSelected == 0) {
+                this.$notify.error({
+                    title: '错误',
+                    message: '请完善检索条件！'
+                });
+            }
+            else {
+                //如果变量==3，那么选择详细数据
+                if(this.radioSelected == 3) {
+                    this.$ajax({
+                        method: "post",
+                        url: "http://47.103.10.220:8081/education/queryEducationByKeywordString?keyword="+this.searchBox.searchInput,
+                        //keyword与后端代码中的局部变量相同
+                        // data:{
+                        //     keyword: this.searchBox.searchInput,
+                        // },
+                        crossDomain: true,
+                        cache: false,
+                        // 加"transformRequest"属性对请求数据进行格式化
+                        transformRequest(obj){
+                            var str = [];
+                            for(var p in obj){
+                                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                            }
+                            return str.join("&");
+                        },
+                    }).then(resolve => {
+                        console.log(resolve);
+                        this.tableData = resolve.data;
+                        this.total = resolve.data.length;
+                        this.eduLoading = false;
+                        console.log(resolve.data);
+                    },reject =>{
+                        this.eduLoading = true;
+                        console.log("失败"+reject);
+                    });
+                }
+                //变量==6.那么数据分级
+                else if(this.radioSelected == 6) {
+                    this.$ajax({
+                        method: "post",
+                        url: "http://47.103.10.220:8081/education/queryEducationByKeywordInt",
+                        //keyword与后端代码中的局部变量相同
+                        data:{
+                            keyword: this.searchBox.searchInput,
+                        },
+                        crossDomain: true,
+                        cache: false,
+                        // 加"transformRequest"属性对请求数据进行格式化
+                        transformRequest(obj){
+                            var str = [];
+                            for(var p in obj){
+                                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                            }
+                            return str.join("&");
+                        },
+                    }).then(resolve => {
+                        console.log(resolve);
+                        this.tableData = resolve.data;
+                        this.total = resolve.data.length;
+                        this.eduLoading = false;
+                        console.log(resolve.data);
+                    },reject =>{
+                        this.eduLoading = true;
+                        console.log("失败"+reject);
+                    });
+                }
+            }
         },
         //导入
         uploadSuccess(response, file, fileList){
@@ -185,7 +230,7 @@ export default {
     created() {
         this.$ajax({
             method: "post",
-            url: "http://localhost:8088/testBoot/listAll",
+            url: "http://47.103.10.220:8081/education/listAllEducation",
             dataType: "json",
             //跨域
             crossDomain: true,
@@ -230,9 +275,9 @@ export default {
         /* border: 1px solid red; */
         /* position: absolute; */
     }
-    .dataIO {
+    /* .dataIO {
         height: 30px;
-    }
+    } */
     #eduTable{
         /* padding: 1%; */
         /* border: #cbcaca 1px solid; */
@@ -253,8 +298,8 @@ export default {
         text-align: right;
     }
     /* 修改年份框的大小 */
-    .el-date-editor.el-input {
+    /* .el-date-editor.el-input {
         width: 154px;
-    }
+    } */
 </style>
 

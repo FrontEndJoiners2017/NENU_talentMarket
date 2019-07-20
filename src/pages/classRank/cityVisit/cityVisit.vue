@@ -16,14 +16,14 @@
                         <el-col :span="4">
                             <!-- 教育/非教育类型选择 -->
                             <el-form-item prop="kind">
-                                <el-select v-model="searchBox.kind" placeholder="请选择类型">
+                                <el-select @change="changeKind" v-model="searchBox.kind" placeholder="请选择类型">
                                     <el-option v-for="item in optionsKind" :key="item.value" :label="item.label" :value="item.value"></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
                         <el-col :span="5">
                             <el-form-item prop="year">
-                                <el-select v-model="searchBox.year" placeholder="请选择年份">
+                                <el-select @change="changeYear" v-model="searchBox.year" placeholder="请选择年份">
                                     <el-option v-for="item in optionsYear" :key="item.value" :label="item.label" :value="item.value"></el-option>
                                 </el-select>
                             </el-form-item>
@@ -56,12 +56,16 @@
                 <el-table v-loading="visitLoading1" :data="tableData1.slice((currentPage1-1)*pagesize,currentPage1*pagesize)" style="width: 100%" id="elTable">
                     <!-- 创建表格各列 -->
                     <el-table-column align="center" prop="year" label="年份"></el-table-column>
-                    <el-table-column align="center" prop="id" label="序号"></el-table-column>
-                    <el-table-column align="center" prop="city_score" label="类型"></el-table-column>
+                    <el-table-column align="center" label="序号" type="index">
+                        <template slot-scope="scope">
+                            <span>{{(currentPage1 - 1) * pagesize + scope.$index + 1}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" prop="education_yon" label="类型"></el-table-column>
                     <el-table-column align="center" prop="city_name" label="城市"></el-table-column>
                     <el-table-column align="center" prop="province" label="省份"></el-table-column>
-                    <el-table-column align="center" prop="city_exception" label="走访单位数"></el-table-column>
-                    <el-table-column align="center" prop="city_sign" label="回访单位数"></el-table-column>
+                    <el-table-column align="center" prop="visitCount" label="走访单位数"></el-table-column>
+                    <el-table-column align="center" prop="returnCount" label="回访单位数"></el-table-column>
                     <el-table-column align="center" prop="city_recency" label="回访率"></el-table-column>
                     <el-table-column align="center" prop="city_grading" label="权重分析"></el-table-column>
                     <el-table-column align="center" label="详细信息">
@@ -77,7 +81,7 @@
             </el-card>
 
             <!-- 对比上一年框 -->
-            <el-card class="visit-boxCard compare-boxCard" v-if="normal">
+            <!-- <el-card class="visit-boxCard compare-boxCard" v-if="normal">
                 <el-form :model="compareBox">
                     <el-row>
                         <el-col :span="10" class="Title">
@@ -86,12 +90,12 @@
                         </el-col>
                     </el-row>
                 </el-form>
-            </el-card>
+            </el-card> -->
 
             <!-- 第二个表格 -->
-            <el-card class="visit-boxCard visitTable" v-if="normal">
+            <!-- <el-card class="visit-boxCard visitTable" v-if="normal">
                 <el-table v-loading="visitLoading2" :data="tableData2.slice((currentPage2-1)*pagesize,currentPage2*pagesize)" style="width: 100%" id="elTable">
-                    <!-- 创建表格各列 -->
+                    创建表格各列
                     <el-table-column align="center" prop="id" label="序号"></el-table-column>
                     <el-table-column align="center" prop="city_name" label="城市"></el-table-column>
                     <el-table-column align="center" prop="province" label="省份"></el-table-column>
@@ -101,24 +105,24 @@
                     <el-table-column align="center" prop="city_grading" label="上年度回访率"></el-table-column>
                     <el-table-column align="center" prop="city_grading" label="提升"></el-table-column>
                 </el-table>
-                <!-- 分页 -->
+                分页
                 <div class="pagination">
                     <el-pagination background layout="prev, pager, next" :total="total2" @current-change="current_change2"></el-pagination>
                 </div>
-            </el-card>
+            </el-card> -->
 
             <!-- 查看详情 -->
             <!-- 标题 -->
-            <el-card class="visit-boxCard" v-if="detail">
+            <!-- <el-card class="visit-boxCard" v-if="detail">
                 <el-row>
                     <el-col class="Title">
                         <span>城市详情信息</span>
                     </el-col>
                 </el-row>
-            </el-card>
+            </el-card> -->
 
             <!-- 城市信息 -->
-            <el-card class="visit-boxCard detail-boxCard" v-model="cityDetail" v-if="detail">
+            <!-- <el-card class="visit-boxCard detail-boxCard" v-model="cityDetail" v-if="detail">
                 <el-row class="detailRow">
                     <el-col :span="4">
                         <span>城市名称：{{}}</span>
@@ -135,10 +139,10 @@
                 <el-row class="detailRow">
                     <el-col>城市分级：{{}}</el-col>
                 </el-row>
-            </el-card>
+            </el-card> -->
             
             <!-- 单位列表 -->
-            <el-card class="visit-boxCard visitTable" v-if="detail">
+            <!-- <el-card class="visit-boxCard visitTable" v-if="detail">
                 <el-form :model="companyList">
                     <el-row class="detailRow">
                         <el-col :span="2" style="text-align: left">
@@ -164,7 +168,7 @@
                     </el-row>
                 </el-form>
                 <el-table v-loading="detailLoading" :data="tableData3.slice((currentPage3-1)*pagesize,currentPage3*pagesize)" style="width: 100%" id="elTable">
-                    <!-- 创建表格各列 -->
+                    创建表格各列
                     <el-table-column align="center" prop="id" label="序号"></el-table-column>
                     <el-table-column align="center" prop="city_score" label="单位名称"></el-table-column>
                     <el-table-column align="center" prop="city_name" label="单位性质"></el-table-column>
@@ -175,18 +179,18 @@
                     <el-table-column align="center" prop="city_grading" label="签约来校宣讲次数"></el-table-column>
                     <el-table-column align="center" prop="city_grading" label="走访情况"></el-table-column>
                 </el-table>
-                <!-- 分页 -->
+                分页
                 <div class="pagination">
                     <el-pagination background layout="prev, pager, next" :total="total3" @current-change="current_change3"></el-pagination>
                 </div>
-            </el-card>
+            </el-card> -->
         </div>
     </el-container>
 </template>
 
 <script>
 // 引入表格
-
+import Qs from 'qs';
 export default {
     data() {
         return{
@@ -228,6 +232,9 @@ export default {
                 //权重
                 weight: ''
             },
+            //搜索变量
+            submitKind: "",
+            submitYear: "",
             //教育/非教育类的option
             optionsKind: [
                 {
@@ -277,42 +284,42 @@ export default {
             //生源人数范围
             optionsRange: [
                 {
-                    value: 1,
+                    value: '1',
                     label: "10以下"
                 },
                 {
-                    value: 2,
+                    value: '2',
                     label: "10-20"
                 },
                 {
-                    value: 3,
+                    value: '3',
                     label: "20-50"
                 },
                 {
-                    value: 4,
+                    value: '4',
                     label: "50-100"
                 },
                 {
-                    value: 5,
+                    value: '5',
                     label: "100以上"
                 }
             ],
             //权重
             optionsWeight: [
                 {
-                    value: 1,
+                    value: '1',
                     label: 'A'
                 },
                 {
-                    value: 2,
+                    value: '2',
                     label: 'B'
                 },
                 {
-                    value: 3,
+                    value: '3',
                     label: 'C'
                 },
                 {
-                    value: 4,
+                    value: '4',
                     label: 'D'
                 },
             ],
@@ -368,31 +375,93 @@ export default {
             this.currentPage = currentPage3;
         },
 
+        //检索条件
+        changeKind(change) {
+            console.log(change);
+            if(change == 1) {
+                this.submitKind = "教育";
+            }
+            else if(change == 2) {
+                this.submitKind = "非教育";
+            }
+        },
+        changeYear(change) {
+            console.log(change);
+            if(change == 1) {
+                this.submitYear = "2022";
+            }
+            else if(change == 2) {
+                this.submitYear = "2021";
+            }
+            else if(change == 3) {
+                this.submitYear = "2020";
+            }
+            else if(change == 4) {
+                this.submitYear = "2019";
+            }
+            else if(change == 5) {
+                this.submitYear = "2018";
+            }
+            else if(change == 6) {
+                this.submitYear = "2017";
+            }
+            else if(change == 7) {
+                this.submitYear = "2016";
+            }
+            else if(change == 8) {
+                this.submitYear = "2015";
+            }
+        },
         //进行搜索
         search(){
-            console.log(this.searchBox.detailDigital);
+            console.log(this.submitYear, this.submitKind);
+            let postData = Qs.stringify({
+                education: this.submitKind,
+                Syear: this.submitYear,
+                city_name: this.searchBox.searchInput,
+            })
             this.$ajax({
                 method: "post",
-                url: "http://localhost:8088/testBoot/selectEducationByKeyword",
+                // url: "http://47.103.10.220:8081/returnCity/select?education="+this.submitKind+"&Syear="+this.submitYear+"&city_name="+this.searchBox.searchInput,
+                url: "http://47.103.10.220:8081/returnCity/select",
                 //keyword与后端代码中的局部变量相同
-                data:{
-                    keyword: this.searchBox.searchInput,
-                },
+                // data:{
+                //     education: this.submitKind,
+                //     Syear: this.submitYear,
+                //     city_name: this.searchBox.searchInput,
+                // },
+                data: postData,
                 crossDomain: true,
                 cache: false,
                 // 加"transformRequest"属性对请求数据进行格式化
-                transformRequest(obj){
-                    var str = [];
-                    for(var p in obj){
-                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                    }
-                    return str.join("&");
-                },
-            }).then(response => {
-                this.tableData = response.data;
-                this.total = response.data.length;
-                this.classifyLoading = false;
-                console.log(response.data);
+                // transformRequest(obj){
+                //     var str = [];
+                //     for(var p in obj){
+                //         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                //     }
+                //     return str.join("&");
+                // },
+            }).then(resolve => {
+                console.log(resolve)
+                //重新请求一次表格1
+                // this.$ajax({
+                //     method: "post",
+                //     url: "http://47.103.10.220:8081/returnCity/listAll",
+                //     dataType: "json",
+                //     //跨域
+                //     crossDomain: true,
+                //     //保证每次请求得到的数据都是最新的而不是缓存的数据
+                //     cache: false,
+                // }).then(resolve => {
+                //     this.tableData1 = resolve.data;
+                //     //将元组总数目设为数据的总数目
+                //     this.total1 = resolve.data.length;
+                //     this.visitLoading1 = false;        
+                //     console.log(resolve.data);
+                // }, reject => {
+                //     this.visitLoading1 = true;
+                //     console.log("失败",reject);
+                // })
             },reject =>{
                 this.classifyLoading = true;
                 console.log("失败"+reject);
@@ -408,22 +477,23 @@ export default {
         },
     },
     created() {
+        //表格1
         this.$ajax({
             method: "post",
-            url: "http://localhost:8088/testBoot/listAll",
+            url: "http://47.103.10.220:8081/returnCity/listAll",
             dataType: "json",
             //跨域
             crossDomain: true,
             //保证每次请求得到的数据都是最新的而不是缓存的数据
             cache: false,
         }).then(resolve => {
-            this.tableData = resolve.data;
+            this.tableData1 = resolve.data;
             //将元组总数目设为数据的总数目
-            this.total = resolve.data.length;
-            this.classifyoading = false;        
+            this.total1 = resolve.data.length;
+            this.visitLoading1 = false;        
             console.log(resolve.data);
         }, reject => {
-            this.classifyLoading = true;
+            this.visitLoading1 = true;
             console.log("失败",reject);
         })
     },
