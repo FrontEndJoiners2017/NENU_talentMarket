@@ -82,7 +82,9 @@
         <el-table-column prop="student_rank" label="权重分析"></el-table-column>
         <!-- 查看详细信息 -->
         <el-table-column prop="details" label="详细信息">
-          <el-button type="text" size="small" @click="detialInfor(scope); Detail=true">查看</el-button>
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="detialInfor(scope); Detail=true">查看</el-button>
+          </template>
         </el-table-column>
       </el-table>
       <!-- 分页 -->
@@ -90,28 +92,29 @@
         layout="prev, pager, next"
         background
         :total="total"
+        @current-change="current_change"
         style="text-align:center;margin-top:20px"
       ></el-pagination>
     </el-card>
 
-    <!-- 对话框/v-if实现查看详情功能 -->
+    <!-- 对话框/v-if实现查看单位详情功能 -->
     <el-card class="box-card" v-if="Detail">
       <span class="TopTitle">城市详细信息</span>
     </el-card>
     <el-card class="box-card" v-if="Detail">
       <el-row class="detailRow">
         <el-col :span="4">
-          <span>城市名称：{{ }}</span>
+          <span>城市名称：{{selectedName}}</span>
         </el-col>
         <el-col :span="4">
-          <span>走访次数：{{ }}</span>
+          <span>走访次数：{{DetailTable[0].cityVisit  }}</span>
         </el-col>
       </el-row>
       <el-row class="detailRow">
-        <span>所属省份:{{ }}</span>
+        <span>所属省份:{{ DetailTable[0].province}}</span>
       </el-row>
       <el-row class="detailRow">
-        <span>城市分级:{{ }}</span>
+        <span>城市分级:{{ DetailTable[0].cityWeight}}</span>
       </el-row>
     </el-card>
     <!-- 详细页面单位列表 -->
@@ -136,7 +139,7 @@
           </el-col>
           <el-col :span="5">
             <el-form-item>
-              <el-select :v-model="selectCompany.companyKind" placeholder="请选择单位类型">
+              <el-select v-model="selectCompany.companyKind" multiple placeholder="请选择单位类型">
                 <el-option
                   v-for="item in companyList.companyKind"
                   :key="item.value"
@@ -154,7 +157,7 @@
                 class="search"
                 icon="el-icon-search"
                 plain
-                v-on:click="select"
+                v-on:click="findCompany"
               >检索</el-button>
             </el-form-item>
           </el-col>
@@ -170,12 +173,13 @@
         v-loading="detailLoading"
       >
         <el-table-column type="index" label="序号"></el-table-column>
-        <el-table-column prop="name" label="单位名称"></el-table-column>
-        <el-table-column prop="nature" label="单位性质"></el-table-column>
-        <el-table-column prop="year" label="年份"></el-table-column>
-        <el-table-column prop="number" label="签约总人数"></el-table-column>
-        <el-table-column prop="undergraduate" label="签约本科"></el-table-column>
-        <el-table-column prop="graduate" label="签约研究生"></el-table-column>
+        <el-table-column prop="companyName" label="单位名称"></el-table-column>
+        <el-table-column prop="companyNature" label="单位性质"></el-table-column>
+        <el-table-column prop="cityYear" label="年份"></el-table-column>
+        <el-table-column prop="citySign" label="签约总人数"></el-table-column>
+        <el-table-column prop="basignNumber" label="签约本科"></el-table-column>
+        <el-table-column prop="masignNumber" label="签约研究生"></el-table-column>
+        <!-- 下面这俩XY没写好,prop字段名不对 -->
         <el-table-column prop="lectures" label="来校宣讲次数"></el-table-column>
         <el-table-column prop="boolean" label="走访情况"></el-table-column>
       </el-table>
@@ -183,7 +187,8 @@
       <el-pagination
         layout="prev, pager, next"
         background
-        :total="total1"
+        :total="total2"
+        @current-change="current_change"
         style="text-align:center;margin-top:20px"
       ></el-pagination>
     </el-card>
@@ -197,16 +202,19 @@ export default {
   methods: {
     find() {
       this.listLoading = true;
-      let searchType = "educationType=" + this.search.educationType;
-      let searchYear = "year=" + this.search.year;
-      let searchExWeight = "exWeight=" + this.search.exWeight;
+      let searchType = "educationYon=" + this.search.educationType;
+      let searchYear = "cityYear=" + this.search.year;
+      let searchexWeight = "exValue=" + this.search.exWeight;
+      // 最多128个字符
       let searchUrl =
-        "http://47.103.10.220:8081/studentFrom/studentFromList" +
+        "http://10.108.118.124:8080/city/queryCityByCondition?" +
         searchType +
         "&" +
         searchYear +
         "&" +
-        searchExWeight;
+        searchexWeight +
+        "&" +
+        "queryType=source";
       this.$ajax({
         method: "get",
         url: searchUrl,
@@ -231,9 +239,40 @@ export default {
         }
       );
     },
+    // 查看详细页面的检索
+    findCompany() {},
     // 查看
     detialInfor(scope) {
+      // 使点击的那行的城市名出现在查看单位详情页上
+      this.selectedName = scope.row.cityName;
       console.log(scope);
+      // 查看详细单位页面
+      this.listLoading = true;
+      let self = this;
+      this.$ajax({
+        method: "post",
+        url:
+          "http://10.108.118.124:8080/city/cityDetails?cityName=" +
+          self.selectedName,
+        dataType: "json",
+        // 跨域
+        crossDomain: true,
+        // 保证每次请求得到的数据都是最新的而不是缓存的数据
+        cache: false
+      }).then(
+        resolve => {
+          // 收到数据后取消loading
+          this.detailLoading = false;
+          this.DetailTable = resolve.data;
+          //分页设置，将元组总数目设为数据的总数目
+          this.total2 = resolve.data.length;
+          console.log(resolve.data);
+        },
+        reject => {
+          console.log("失败", reject);
+          this.detailLoading = true;
+        }
+      );
     },
     //分页设置，保持传入分页的当前页，令定义的当前页=分页的当前页
     current_change(currentPage) {
@@ -246,9 +285,10 @@ export default {
   },
   data() {
     return {
+      // 点击查看获取到该行的城市名
+      selectedName: "",
       // 详细信息设置，初始不可见
       Detail: false,
-
       listLoading: true,
       //分页设置，当前页数为1，每页装的元组为10，元组总数目初始为0
       currentPage: 1,
@@ -310,8 +350,6 @@ export default {
         exWeight: ""
       },
       // -------------------------详细页面部分---------------------------------
-      //多选框默认选择项
-      checkList: ["签约单位"],
       // 详细信息表格
       DetailTable: [],
       // 详细页面加载
@@ -386,17 +424,25 @@ export default {
 
 <style scoped>
 /* card设置 */
+/* card设置 */
 .box-card {
   width: 100%;
   border-radius: 10px;
+  /* padding-left: 1%; */
 }
 /* 标题 */
-#TopTitle {
+.TopTitle {
   font-size: 19px;
 }
 /* 搜索部分上下间距 */
-#selectBoxs {
+.selectBoxs {
   margin-top: 1.5%;
+}
+
+.detailRow {
+  text-align: left;
+  margin-top: 0.5%;
+  margin-bottom: 0.5%;
 }
 </style>
 
