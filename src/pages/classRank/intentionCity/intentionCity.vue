@@ -5,7 +5,7 @@
       <el-form :inline="true" :model="form">
         <!-- inline行内的表单域;model表单数据对象 -->
         <el-row>
-          <span id="TopTitle">意向城市排名检索</span>
+          <span class="TopTitle">意向城市排名检索</span>
         </el-row>
         <el-row id="selectBoxs">
           <!-- 教育类别 -->
@@ -81,18 +81,18 @@
         <!-- 查看详细信息 -->
         <el-table-column prop="details" label="详细信息">
           <template slot-scope="scope">
-          <el-button type="text" size="small" @click="detialInfor(scope)">查看</el-button>
+            <el-button type="text" size="small" @click="detialInfor(scope)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
       <!-- 分页 -->
       <!-- <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="text-align:center;margin-top:20px">
-			</el-pagination> -->
+      </el-pagination>-->
       <el-pagination
         layout="prev, pager, next"
         background
         :total="total"
-         @current-change="current_change"
+        @current-change="current_change"
         style="text-align:center;margin-top:20px"
       ></el-pagination>
     </el-card>
@@ -124,8 +124,8 @@
           <el-col :span="3">
             <span class="TopTitle">单位列表</span>
           </el-col>
-          <el-col :span="5">
-            <!-- 详细信息select选择器 -->
+          <!-- 详细单位信息select选择器，因为后端数据库有问题，不能实现 -->
+          <!-- <el-col :span="5">
             <el-form-item>
               <el-select v-model="selectCompany.year" placeholder="请选择年份">
                 <el-option
@@ -139,7 +139,7 @@
           </el-col>
           <el-col :span="5">
             <el-form-item>
-              <el-select v-model="selectCompany.companyKind" placeholder="请选择单位类型">
+              <el-select v-model="selectCompany.companyKind" multiple placeholder="请选择单位类型">
                 <el-option
                   v-for="item in companyList.companyKind"
                   :key="item.value"
@@ -150,7 +150,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <!-- 详细信息检索按钮 -->
             <el-form-item>
               <el-button
                 type="primary"
@@ -160,7 +159,7 @@
                 v-on:click="findCompany"
               >检索</el-button>
             </el-form-item>
-          </el-col>
+          </el-col>-->
         </el-row>
       </el-form>
     </el-card>
@@ -179,9 +178,11 @@
         <el-table-column prop="citySign" label="签约总人数"></el-table-column>
         <el-table-column prop="basignNumber" label="签约本科"></el-table-column>
         <el-table-column prop="masignNumber" label="签约研究生"></el-table-column>
+        <el-table-column prop="contactPeople" label="来校宣讲人"></el-table-column>
+        <el-table-column prop="visitPeople" label="走访人"></el-table-column>
         <!-- 下面这俩XY没写好,prop字段名不对 -->
-        <el-table-column prop="lectures" label="来校宣讲次数"></el-table-column>
-        <el-table-column prop="boolean" label="走访情况"></el-table-column>
+        <!-- <el-table-column prop="lectures" label="来校宣讲次数"></el-table-column>
+        <el-table-column prop="boolean" label="走访情况"></el-table-column>-->
       </el-table>
       <!-- 详细信息分页 -->
       <el-pagination
@@ -210,7 +211,9 @@ export default {
         "&" +
         searchYear +
         "&" +
-        searchexWeight + "&" + "queryType=ex";
+        searchexWeight +
+        "&" +
+        "queryType=ex";
       this.$ajax({
         method: "get",
         url: searchUrl,
@@ -235,14 +238,14 @@ export default {
         }
       );
     },
-       // 查看详细页面的检索
-    findCompany() {
-      //TODO:后端未做
-    },
+    // 查看详细页面的检索
+    // findCompany() {
+    //   //TODO:后端未做
+    // },
 
     // 查看
     detialInfor(scope) {
-      this.Detail=true;
+      this.Detail = true;
       // 使点击的那行的城市名出现在查看单位详情页上
       this.selectedName = scope.row.cityName;
       console.log(scope);
@@ -281,24 +284,24 @@ export default {
     //详情页面分页设置
     current_change2(currentPage) {
       this.currentPage2 = currentPage;
-    },
+    }
     // handleCurrentChange(val) {
-		// 		this.page = val;
-		// 		this.getUsers();
-		// 	},
-		// 	//获取用户列表
-		// 	getUsers() {
-		// 		let para = {
-		// 			page: this.page,
-		// 			name: this.filters.name
-		// 		};
-		// 		getUserListPage(para).then((res) => {
-		// 			this.total = res.data.total;
-		// 			this.users = res.data.users;
-		// 			this.listLoading = false;
-		// 			//NProgress.done();
-		// 		});
-		// 	},
+    // 		this.page = val;
+    // 		this.getUsers();
+    // 	},
+    // 	//获取用户列表
+    // 	getUsers() {
+    // 		let para = {
+    // 			page: this.page,
+    // 			name: this.filters.name
+    // 		};
+    // 		getUserListPage(para).then((res) => {
+    // 			this.total = res.data.total;
+    // 			this.users = res.data.users;
+    // 			this.listLoading = false;
+    // 			//NProgress.done();
+    // 		});
+    // 	},
   },
   data() {
     return {
@@ -313,8 +316,8 @@ export default {
       total: 0,
 
       users: [],
-				total: 0,
-				page: 1,
+      total: 0,
+      page: 1,
 
       // 签约城市表格部分
       cityIntention: [],
@@ -440,11 +443,11 @@ export default {
         this.listLoading = true;
       }
     );
-   }
- // ,
-	// 	mounted() {
-	// 		this.getUsers();
-	// 	}
+  }
+  // ,
+  // 	mounted() {
+  // 		this.getUsers();
+  // 	}
 };
 </script>
 
@@ -461,7 +464,7 @@ export default {
   font-size: 19px;
 }
 /* 搜索部分上下间距 */
-.selectBoxs {
+#selectBoxs {
   margin-top: 1.5%;
 }
 

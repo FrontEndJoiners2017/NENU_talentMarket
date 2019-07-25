@@ -128,8 +128,8 @@
           <el-col :span="3">
             <span class="TopTitle">单位列表</span>
           </el-col>
-          <el-col :span="5">
-            <!-- 详细信息select选择器 -->
+          <!-- 详细单位信息select选择器，因为后端数据库有问题，不能实现 -->
+          <!-- <el-col :span="5">
             <el-form-item>
               <el-select v-model="selectCompany.year" placeholder="请选择年份">
                 <el-option
@@ -154,7 +154,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <!-- 详细信息检索按钮 -->
             <el-form-item>
               <el-button
                 type="primary"
@@ -164,7 +163,7 @@
                 v-on:click="findCompany"
               >检索</el-button>
             </el-form-item>
-          </el-col>
+          </el-col>-->
         </el-row>
       </el-form>
     </el-card>
@@ -183,9 +182,11 @@
         <el-table-column prop="citySign" label="签约总人数"></el-table-column>
         <el-table-column prop="basignNumber" label="签约本科"></el-table-column>
         <el-table-column prop="masignNumber" label="签约研究生"></el-table-column>
+        <el-table-column prop="contactPeople" label="来校宣讲人"></el-table-column>
+        <el-table-column prop="visitPeople" label="走访人"></el-table-column>
         <!-- 下面这俩XY没写好,prop字段名不对 -->
-        <el-table-column prop="lectures" label="来校宣讲次数"></el-table-column>
-        <el-table-column prop="boolean" label="走访情况"></el-table-column>
+        <!-- <el-table-column prop="lectures" label="来校宣讲次数"></el-table-column>
+        <el-table-column prop="boolean" label="走访情况"></el-table-column>-->
       </el-table>
       <!-- 详细信息分页 -->
       <el-pagination
@@ -244,40 +245,40 @@ export default {
         }
       );
     },
-    // 查看详细页面的检索,[尚未完成,xy]
-    findCompany() {
-      this.detailLoading = true;
-      let searchYear = "Year=" + this.selectCompany.year;
-      let searchKind= "Kind=" + this.selectCompany.companyKind;
-      // 最多128个字符
-      let searchUrl =
-        "http://10.108.118.124:8080/city/queryCityByCondition?" +
-        searchYear +
-        "&" +
-        searchKind +
-        "&" +
-        "queryType=detailSign";
-      this.$ajax({
-        method: "post",
-        url: searchUrl,
-        dataType: "json",
-        // 跨域
-        crossDomain: true,
-        // 保证每次请求得到的数据都是最新的而不是缓存的数据
-        cache: false
-      }).then(
-        resolve => {
-          this.detailLoading = false;
-          this.DetailTable = resolve.data;
-          this.total2 = resolve.data.length;
-          console.log(resolve.data);
-        },
-        reject => {
-          console.log("失败", reject);
-          this.detailLoading = true;
-        }
-      );
-    },
+    // 查看详细页面的检索,[后端数据库问题不使用检索]
+    // findCompany() {
+    //   this.detailLoading = true;
+    //   let searchYear = "Year=" + this.selectCompany.year;
+    //   let searchKind = "Kind=" + this.selectCompany.companyKind;
+    //   // 最多128个字符
+    //   let searchUrl =
+    //     "http://10.108.118.124:8080/city/queryCityByCondition?" +
+    //     searchYear +
+    //     "&" +
+    //     searchKind +
+    //     "&" +
+    //     "queryType=detailSign";
+    //   this.$ajax({
+    //     method: "post",
+    //     url: searchUrl,
+    //     dataType: "json",
+    //     // 跨域
+    //     crossDomain: true,
+    //     // 保证每次请求得到的数据都是最新的而不是缓存的数据
+    //     cache: false
+    //   }).then(
+    //     resolve => {
+    //       this.detailLoading = false;
+    //       this.DetailTable = resolve.data;
+    //       this.total2 = resolve.data.length;
+    //       console.log(resolve.data);
+    //     },
+    //     reject => {
+    //       console.log("失败", reject);
+    //       this.detailLoading = true;
+    //     }
+    //   );
+    // },
     // 查看
     detialInfor(scope) {
       // 使点击的那行的城市名出现在查看单位详情页上
