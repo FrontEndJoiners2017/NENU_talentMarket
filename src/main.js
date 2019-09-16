@@ -8,7 +8,11 @@ import 'element-ui/lib/theme-chalk/index.css'
 import store from './store'
 import axios from 'axios'
 import qs from 'qs';
+//引入全局后端url
+import webUrl from './webUrl'
 
+//抛出
+Vue.prototype.backendUrl = webUrl.backendUrl
 // ajax数据交互
 Vue.prototype.$ajax = axios
 Vue.prototype.$qs = qs;
