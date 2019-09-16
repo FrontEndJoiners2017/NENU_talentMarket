@@ -9,8 +9,8 @@
         <el-button>添加信息</el-button>
       </router-link>
       <br>
-      <!-- 下拉列表 -->
-      <el-select v-model="year" placeholder="请选择">
+      <!-- 搜索部分 -->
+      <el-select v-model="year" placeholder="请选择年份">
         <el-option
         v-for="item in options"
         :key="item.value"
@@ -18,24 +18,10 @@
         :value="item.value">
         </el-option>
       </el-select>
-      <!-- 远程搜索 -->
-      <el-select
-      v-model="search"
-      multiple
-      filterable
-      remote
-      reserve-keyword
-      placeholder="请输入关键词"
-      :remote-method="remoteMethod"
-      :loading="loading">
-        <el-option
-        v-for="item in options"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
-        </el-option>
-      </el-select>
-      <el-button type="primary" icon="el-icon-search"  plain>检索</el-button>
+      <el-input placeholder="请输入关键词" v-model="keyword" 
+        style="display:inline-block;width:200px">
+      </el-input>
+      <el-button @click="search" type="primary" icon="el-icon-search"  plain>检索</el-button>
     </div>
   </el-card>
 	<!-- 表格 -->
@@ -45,125 +31,164 @@
       :data="tableData"
       style="width: 100%">
       <el-table-column
-        prop="date"
+        prop="time"
         label="年份"
         >
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="company_name"
         label="单位名称"
         >
       </el-table-column>
       <el-table-column
-        prop="property"
+        prop="company_nature"
         label="单位性质"
         >
       </el-table-column>
       <el-table-column
-        prop="city"
+        prop="company_place"
         label="所在城市"
         >
       </el-table-column>
-      <!-- <el-table-column
-        prop="province"
-        label="省份"
-        >
-      </el-table-column> -->
       <el-table-column
-        prop="contacts"
-        label="走访联系人"
-        >
-      </el-table-column>
-      <el-table-column
-        prop="staff"
+        prop="visitor_name"
         label="走访人员"
         >
       </el-table-column>
       <el-table-column
-        prop="method"
+        prop="contact"
+        label="走访联系人"
+        >
+      </el-table-column>
+      <el-table-column
+        prop="mobiephone"
         label="联系方式"
         >
       </el-table-column>
       <el-table-column
-        prop="details"
         label="详细信息"
-        >
-          <!-- <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button> -->
-          <router-link :to="{name:'markInterviewDetails'}">
-              <el-button type="text" size="small">
-                  查看
-              </el-button>
-          </router-link>
-        </el-table-column>
+      >
+        <template slot-scope="scope">
+          <!-- <router-link :to="{name:'markInterviewDetails'}"> -->
+            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+          <!-- </router-link> -->
+        </template>
+      </el-table-column>
       </el-table>
     </div>
     <!-- 分页 -->
-    <el-pagination
-      background
-      layout="prev, pager, next"
-      :total="1000">
-    </el-pagination>
+    <el-pagination background layout="prev, pager, next" :total="total" @current-change="current_change"></el-pagination>
   </el-card>
 
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+import qs from 'qs'
 export default {
     data() {
         return {
           //检索部分
           year:'',
+          keyword:'',
           // 表格部分
-          tableData: [{
-            date: '',
-            name: '',
-            property: '',
-            city:'',
-            // province:'',
-            contacts:'',
-            staff:'',
-            method:'',
-          }],
-          // 远程搜索部分
-          options: [],
-          search: [],
-          list: [],
-          loading: false,
-          states: [],
+          tableData: [],
           // 下拉列表
           options: [{
-          value: '选项1',
+          value: '2019',
           label: '2019'
-        }]
+        },
+        {
+          value:'2018',
+          label:'2018'
+        }],
+        //分页
+        //当前页数
+        currentPage: 1,
+        //每页装的元组
+        pagesize: 10,
+        //元组总数目
+        total: 0,
+
         }
     },//data结束
     mounted() {
-      this.list = this.states.map(item => {
-        // return { value: item, label: item };
-        return { search: item, label: item };
-      });
+      // this.list = this.states.map(item => {
+      //   return { search: item, label: item };
+      // });
+      //得到全部数据
+      axios({
+        method:'get',
+        url:'http://47.103.10.220:8084/interview/listAll',
+      }).then(response=>{
+        let len=response.data.visitorList.length
+        for (let i = 0; i < len; i++) {
+          this.tableData.push({time:response.data.visitorList[i].time,
+                              company_name:response.data.visitorList[i].company_name,
+                              company_nature:response.data.visitorList[i].company_nature,
+                              company_place:response.data.visitorList[i].company_place,
+                              visitor_name:response.data.visitorList[i].visitor_name,
+                              contact:response.data.positionList[i].contact,
+                              mobiephone:response.data.positionList[i].mobiephone})
+        }
+        // 去掉第一个空对象
+        this.tableData.splice(0,1)
+        this.total=response.data.visitorList.length
+      }).catch(error=>{
+        console.log(error)
+      })
+
     },
     methods: {
-      // 表格点击查看
-      // handleClick(row) {
-      //   console.log(row);
-      // },
-      // 远程查询
-      remoteMethod(query) {
-        if (query !== '') {
-          this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
-            this.options = this.list.filter(item => {
-              return item.label.toLowerCase()
-                .indexOf(query.toLowerCase()) > -1;
-            });
-          }, 200);
-        } else {
-          this.options = [];
+      //表格点击查看
+      handleClick(row) {
+        let params={
+          companyName:row.company_name,
+          visitorName:row.visitor_name,
+          time:row.time
         }
-      }
+        this.$router.push({
+          path: '/markInterview/Details',
+          name: 'markInterviewDetails',
+          params: params
+        })
+      },
+      //分页
+      current_change(currentPage){
+        this.currentPage = currentPage;
+      },
+      // 搜索
+      search(){
+        // let data=qs.stringify({
+        //   "year":this.year,
+        //   "keyword":this.keyword
+        // })
+        axios({
+          method:'post',
+          url:'http://47.103.10.220:8084/interview/queryInterview?year='+this.year+"&keyword="+this.keyword,
+          // data:data,
+        }).then(response=>{
+          console.log(response)
+          // 清空数组
+          this.tableData.splice(0)
+          let len=response.data.visitorList.length
+          for (let i = 0; i < len; i++) {
+            this.tableData.push({time:response.data.visitorList[i].time,
+                                company_name:response.data.visitorList[i].company_name,
+                                company_nature:response.data.visitorList[i].company_nature,
+                                company_place:response.data.visitorList[i].company_place,
+                                visitor_name:response.data.visitorList[i].visitor_name,
+                                contact:response.data.positionList[i].contact,
+                                mobiephone:response.data.positionList[i].mobiephone})
+          }
+          this.total=response.data.visitorList.length
+        }).catch(error=>{
+          console.log(error)
+        })
+      },
+
+
     },//method结束
 
 }

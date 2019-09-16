@@ -9,9 +9,7 @@
               <el-input v-model="form.staff"></el-input>
             </el-form-item>
             <el-form-item label="时间">
-              <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="form.date" style="width: 100%;"></el-date-picker>
-             </el-col>
+              <el-input v-model="form.date"></el-input>
             </el-form-item>
             <el-form-item label="单位名称">
               <el-input v-model="form.name"></el-input>
@@ -27,13 +25,13 @@
             </el-form-item>
             <el-form-item label="参会意向">
               <el-checkbox-group v-model="form.type">
-              <el-checkbox label="秋季非师范毕业生专场" name="type"></el-checkbox>
-              <el-checkbox label="秋季精品洽谈月专场" name="type"></el-checkbox>
-              <el-checkbox label="全国高校毕业生教育人才招聘会" name="type"></el-checkbox>
-              <el-checkbox label="春季非师范毕业生专场" name="type"></el-checkbox>
-              <el-checkbox label="春季精品洽谈月专场" name="type"></el-checkbox>
-              <el-checkbox label="网上发布招聘信息" name="type"></el-checkbox>
-              <el-checkbox label="暂不考虑参加招聘会" name="type"></el-checkbox>
+              <el-checkbox label="1" name="type">秋季非师范毕业生专场</el-checkbox>
+              <el-checkbox label="2" name="type">秋季精品洽谈月专场</el-checkbox>
+              <el-checkbox label="3" name="type">全国高校毕业生教育人才招聘会</el-checkbox>
+              <el-checkbox label="4" name="type">春季非师范毕业生专场</el-checkbox>
+              <el-checkbox label="5" name="type">春季精品洽谈月专场</el-checkbox>
+              <el-checkbox label="6" name="type">网上发布招聘信息</el-checkbox>
+              <el-checkbox label="7" name="type">暂不考虑参加招聘会</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
             <el-form-item label="单位信息反馈">
@@ -53,6 +51,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+import qs from 'qs'
 export default {
     data() {
       return {
@@ -69,9 +69,45 @@ export default {
         }
       }
     },
+    mounted(){
+      let companyName=this.$route.params.companyName
+      let visitorName=this.$route.params.visitorName
+      let time=this.$route.params.time
+      axios({
+          method:'post',
+          url:'http://47.103.10.220:8084/interview/queryByCnAndVn?companyName='+companyName+"&visitorName="+visitorName+"&time="+time,
+          crossDomain: true,
+          cache: false,
+        }).then(response=>{
+          console.log(response)
+          this.form.staff=response.data.visitorList.visitor_name,
+          this.form.date=response.data.visitorList.time,
+          this.form.name=response.data.visitorList.company_name,
+          this.form.proto=response.data.visitorList.company_nature,
+          this.form.address=response.data.visitorList.company_place,
+          this.form.stamp=response.data.visitorList.postcode,
+          this.form.type=response.data.PI,
+          this.form.feedback=response.data.visitorList.feedback,
+          this.form.summary=response.data.visitorList.conclude
+        }).catch(error=>{
+          console.log(error)
+        })
+    },
     methods: {
       onSubmit() {
-        console.log('submit!');
+        let data=qs.stringify(this.form)
+        axios({
+          method:'post',
+          url:'http://47.103.10.220:8084/interview/updateInterview',
+          data:data,
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          crossDomain: true,
+          cache: false,
+        }).then(response=>{
+          console.log(response)
+        }).catch(error=>{
+          console.log(error)
+        })
       }
     }
   }

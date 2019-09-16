@@ -4,24 +4,11 @@
         <el-card class="box-card">
             <div class="text item">
                 <h1>单位详情列表</h1>
-                <!-- 远程搜索 -->
-                <el-select
-                v-model="keyWds"
-                multiple
-                filterable
-                remote
-                reserve-keyword
-                placeholder="请输入关键词"
-                :remote-method="remoteMethod"
-                :loading="loading">
-                    <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-button type="primary" icon="el-icon-search" plain>检索</el-button>
+                <!-- 搜索 -->
+                <el-input placeholder="请输入关键词" v-model="keyword" 
+                  style="display:inline-block;width:200px">
+                </el-input>
+                <el-button @click="search" type="primary" icon="el-icon-search"  plain>检索</el-button>
             </div>
         </el-card>
         <!-- 表格 -->
@@ -31,22 +18,22 @@
                 :data="tableData"
                 style="width: 100%">
                     <el-table-column
-                    prop="num"
+                    prop="id"
                     label="序号"
                     >
                     </el-table-column>
                     <el-table-column
-                    prop="name"
+                    prop="company_name"
                     label="单位名称"
                     >
                     </el-table-column>
                     <el-table-column
-                    prop="property"
+                    prop="company_nature"
                     label="单位性质"
                     >
                     </el-table-column>
                     <el-table-column
-                    prop="city"
+                    prop="company_city"
                     label="所在城市"
                     >
                     </el-table-column>
@@ -56,37 +43,30 @@
                     >
                     </el-table-column>
                     <el-table-column
-                    prop="interviewTimes"
+                    prop="total_visit"
                     label="历年走访次数"
                     >
                     </el-table-column>
                     <el-table-column
-                    prop="speechTimes"
+                    prop="total_return"
                     label="来校宣讲次数"
                     >
                     </el-table-column>
                     <el-table-column
-                    prop="signedNum"
+                    prop="total_sign"
                     label="历年签约人数"
                     >
                     </el-table-column>
                     <el-table-column
-                    prop="details"
                     label="详细信息"
                     >
-                      <router-link to="caseAnalysisDetails">
-                        <el-button type="text" size="small">
-                            查看
-                        </el-button>
-                      </router-link>
-                    </el-table-column>
+                    <template slot-scope="scope">
+                      <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+                    </template>
+                  </el-table-column>
                 </el-table>
                 <!-- 分页 -->
-                <el-pagination
-                  background
-                  layout="prev, pager, next"
-                  :total="1000">
-                </el-pagination>
+                <el-pagination background layout="prev, pager, next" :total="total" @current-change="current_change"></el-pagination>
             </div>
         </el-card>
         
@@ -94,61 +74,68 @@
 </template>
 
 <script>
+import Axios from 'axios';
 export default {
     data() {
         return {
           // 表格部分
-          tableData: [{
-            num: '',
-            name: '',
-            property: '',
-            city:'',
-            province:'',
-            interviewTimes:'',
-            speechTimes:'',
-            signedTimes:'',
-            details:''
-          }],
+          tableData: [],
           // 远程搜索部分
-          options: [],
-          keyWds: [],
-          list: [],
-          loading: false,
-          states: [],
-          // 下拉列表
-          options: [{
-          value: '选项1',
-          label: '2019'
-        }]
+          keyword:'',
+          //分页
+          //当前页数
+          currentPage: 1,
+          //每页装的元组
+          pagesize: 10,
+          //元组总数目
+          total: 0,
         }
       },
     mounted() {
-      this.list = this.states.map(item => {
-        // return { value: item, label: item };
-        return { keyWds: item, label: item };
-      });
+      Axios({
+        method:'get',
+        url:'http://47.103.10.220:8081/company/listCompany',
+        crossDomain: true,
+        cache: false,
+      }).then(response=>{
+        console.log(response)
+        this.tableData=response.data
+        this.total=response.data.length
+      }).catch(error=>{
+        console.log(error)
+      })
     },
     methods: {
         // 表格点击查看
-        // handleClick(row) {
-        //   console.log(row);
-        // },
-
-        // 远程查询
-        remoteMethod(query) {
-        if (query !== '') {
-          this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
-            this.options = this.list.filter(item => {
-              return item.label.toLowerCase()
-                .indexOf(query.toLowerCase()) > -1;
-            });
-          }, 200);
-        } else {
-          this.options = [];
+        handleClick(row) {
+        let params={
+          companyIdStr:row.id,
+          companyName:row.company_name
         }
-      }
+        this.$router.push({
+          path: '/caseAnalysis/Details',
+          name: 'caseAnalysisDetails',
+          params: params
+        })
+        },
+
+        //分页
+        current_change(currentPage){
+          this.currentPage = currentPage;
+        },
+        // 远程查询
+        search(){
+          Axios({
+            mehtod:'post',
+            url:'http://47.103.10.220:8081/company/selectCompany?keyword='+this.keyword,
+          }).then(response=>{
+            console.log(response)
+            this.tableData=response.data
+            this.total=response.data.length
+          }).catch(error=>{
+            console.log(error)
+          })
+        },
     },//methods结束
 }
 </script>

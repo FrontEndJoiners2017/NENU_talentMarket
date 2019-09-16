@@ -185,7 +185,7 @@ const router = new VueRouter({
      * 单位情况分析
      * caseAnalysis
      * |--Details
-     * @author TingtingWU
+     * @author WenqingXU
      */
     {
       path: '/caseAnalysis',
