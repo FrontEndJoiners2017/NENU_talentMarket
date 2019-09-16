@@ -15,8 +15,6 @@ import sourceCity from '@/pages/classRank/sourceCity/sourceCity'
 import formerInterview from '@/pages/classRank/formerInterview/formerInterview'
 import cityVisit from '@/pages/classRank/cityVisit/cityVisit'
 import cityClassify from '@/pages/classRank/cityClassify/cityClassify'
-// 城市分类排名 > 公共的详细城市信息页面
-import cityDetails from '@/pages/classRank/cityDetails/cityDetails'   
 // 市场走访管理
 import markInterview from '@/pages/markInterview/markInterviewHome'
 import markInterviewAdd from '@/pages/markInterview/markInterviewAdd'
@@ -97,11 +95,6 @@ const router = new VueRouter({
      * @author NaLI
      * @author HaichuanCHU
      */
-    {
-      path: '/cityDetails',
-      component: cityDetails,
-      name: 'cityDetails'
-    },
     {
       path:'/signCity',
       component: signCity,
