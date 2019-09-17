@@ -137,7 +137,7 @@
                         <el-col :span="2" style="text-align: left">
                             <span>单位列表</span>
                         </el-col>
-                        <el-col :span="5" style="text-align: left">
+                        <!-- <el-col :span="5" style="text-align: left">
                             <el-form-item>
                                 <el-select v-model="companyList.year" placeholder="请选择年份">
                                     <el-option v-for="item in optionsYear" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -153,7 +153,7 @@
                         </el-col>
                         <el-col :span="3" style="text-align: left">
                             <el-button type="primary" icon="el-icon-search" @click="search()" plain>检索</el-button>
-                        </el-col>
+                        </el-col> -->
                     </el-row>
                 </el-form>
                 <el-table v-loading="detailLoading" :data="tableData2.slice((currentPage2-1)*pagesize,currentPage2*pagesize)" style="width: 100%" id="elTable">
