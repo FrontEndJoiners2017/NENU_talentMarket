@@ -7,7 +7,7 @@ const store = new Vuex.Store({
     state: {
         isLogined: false,
         userInfo: {
-            ID: "",
+            username: "",
             name: ""
         }
     },
@@ -27,19 +27,19 @@ const store = new Vuex.Store({
         //登录，保存登录状态和用户信息
         LOGIN: (state, loginInfo) => {
             state.isLogined = true
-            state.userInfo.ID = loginInfo.loginInfo.ID
+            state.userInfo.username = loginInfo.loginInfo.username
             state.userInfo.name = loginInfo.loginInfo.name
         },
         //退出登录，清除登录状态和用户信息
         LOGOUT: state => {
             state.isLogined = false
-            state.userInfo.ID = ''
+            state.userInfo.username = ''
             state.userInfo.name = ''
         },
         //清除全部信息
         REMOVEALL: state => {
             state.isLogined = false
-            state.userInfo.ID = ''
+            state.userInfo.username = ''
             state.userInfo.name = ''
         }
     },

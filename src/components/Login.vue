@@ -6,18 +6,16 @@
     </div>
     <el-card class="box-card" v-loading="loading" element-loading-text="数据请求中">
       <h1>欢迎登录</h1>
-      <hr>
+      <hr />
       <el-form label-position="right" label-width="80px" :model="userInfo" ref="userInfo">
         <el-form-item label="账号">
-          <el-input v-model="userInfo.ID"></el-input>
+          <el-input v-model="userInfo.username"></el-input>
         </el-form-item>
         <el-form-item label="密码">
           <el-input v-model="userInfo.password" type="password"></el-input>
         </el-form-item>
         <el-form-item>
-          <!-- <el-checkbox v-model="rememberID" label="true">记住账号</el-checkbox> -->
-          <!-- <el-checkbox v-model="rememberPassword" label="false">记住密码</el-checkbox> -->
-          <el-button type="primary" v-on:click="submitForm('userInfo')">登录</el-button>
+          <el-button type="primary" @click="clickLogin(userInfo)">登录</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -30,9 +28,9 @@ export default {
   data() {
     return {
       userInfo: {
-        ID: "monkey",
+        username: "test",
         name: "Joiners",
-        password: "111111"
+        password: "test"
       },
       rememberID: true,
       rememberPassword: false,
@@ -40,30 +38,46 @@ export default {
     };
   },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (
-          this.userInfo.ID == "monkey" &&
-          this.userInfo.password == "111111"
-        ) {
+    clickLogin(userInfo) {
+      //发送网络请求
+      let xmlhttp;
+      if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      let self = this;
+      xmlhttp.open(
+        "POST",
+        "http://47.103.10.220:8080/login?username="+this.userInfo.username+"&password="+this.userInfo.password,
+        true
+      );
+      xmlhttp.setRequestHeader(
+        "Content-type",
+        "application/x-www-form-urlencoded"
+      );
+      xmlhttp.send(null);
+      xmlhttp.onreadystatechange = doResult; //设置回调函数
+      function doResult() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
           //将登录状态写入store.state
-          this.$store.dispatch("loginAction", {
-            loginInfo: this.userInfo
+          self.$store.dispatch("loginAction", {
+            loginInfo: self.userInfo
           });
           //提示登录成功的信息
           console.log("登录成功！");
           //进入DFU页面
-          this.$router.push({ name: "DFU" });
-        } else {
+          self.$router.push({ name: "DFU" });
+        } else if (xmlhttp.readyState == 4 && xmlhttp.status != 200) {
           //提示登录失败的信息
-          this.$notify.error({
+          self.$notify.error({
             title: "登录失败",
             message: "请检查账号和密码"
           });
           console.log("登录失败！");
           return false;
         }
-      });
+      }
     }
   }
 };

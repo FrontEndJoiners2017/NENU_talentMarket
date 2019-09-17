@@ -13,6 +13,10 @@
 let url = "http://47.103.10.220";
 
 //端口号部分
-let post = ":8888";
+let post = ":8081";
 //拼接
-backendUrl = url + post;
+let backendUrl = url + post;
+
+export default {
+    backendUrl
+}
