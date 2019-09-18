@@ -482,17 +482,17 @@ export default {
             console.log(this.submitClassify, this.submitWeight, this.submitPolicy);
             this.$ajax({
                 method: "post",
-                // url: "http://47.103.10.220:8081/cityLevel/updateCityLevel?id="+this.changeDetailInfor.id+"&cityGrading="+this.submitWeight+"&cityRank="+this.submitClassify+"&road="+this.submitPolicy,
-                url: "http://47.103.10.220:8084/cityLevel/updateCityLevel",
-                data: {
-                    //id
-                    id: this.changeDetailInfor.id,
-                    cityGrading: this.submitClassify,
-                    //权重分析
-                    cityRank: this.submitWeight,
-                    //一带一路
-                    road: this.submitPolicy,
-                },
+                url: "http://47.103.10.220:8081/cityLevel/updateCityLevel?id="+this.changeDetailInfor.id+"&cityGrading="+this.submitWeight+"&cityRank="+this.submitClassify+"&road="+this.submitPolicy,
+                // url: "http://47.103.10.220:8081/cityLevel/updateCityLevel",
+                // data: {
+                //     //id
+                //     id: this.changeDetailInfor.id,
+                //     cityGrading: this.submitClassify,
+                //     //权重分析
+                //     cityRank: this.submitWeight,
+                //     //一带一路
+                //     road: this.submitPolicy,
+                // },
                 crossDomain: true,
                 cache: false,
                 transformRequest(obj){
@@ -513,7 +513,7 @@ export default {
                 //再重新请求数据
                 this.$ajax({
                     method: "post",
-                    url: "http://47.103.10.220:8084/cityLevel/listAll",
+                    url: "http://47.103.10.220:8081/cityLevel/listAll",
                     dataType: "json",
                     //跨域
                     crossDomain: true,
@@ -542,7 +542,7 @@ export default {
     created() {
         this.$ajax({
             method: "post",
-            url: "http://47.103.10.220:8084/cityLevel/listAll",
+            url: "http://47.103.10.220:8081/cityLevel/listAll",
             dataType: "json",
             //跨域
             crossDomain: true,
