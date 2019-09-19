@@ -415,15 +415,15 @@ export default {
         //进行搜索
         search(){
             console.log(this.submitYear, this.submitKind);
-            let postData = Qs.stringify({
-                education: this.submitKind,
-                Syear: this.submitYear,
-                city_name: this.searchBox.searchInput,
-            })
+            // let postData = Qs.stringify({
+            //     education: this.submitKind,
+            //     Syear: this.submitYear,
+            //     city_name: this.searchBox.searchInput,
+            // })
             this.$ajax({
                 method: "post",
-                // url: "http://47.103.10.220:8081/returnCity/select?education="+this.submitKind+"&Syear="+this.submitYear+"&city_name="+this.searchBox.searchInput,
-                url: "http://47.103.10.220:8081/returnCity/select",
+                url: "http://47.103.10.220:8081/returnCity/select?education="+this.submitKind+"&Syear="+this.submitYear+"&city_name="+this.searchBox.searchInput,
+                // url: "http://47.103.10.220:8081/returnCity/select",
                 //keyword与后端代码中的局部变量相同
                 // data:{
                 //     education: this.submitKind,
@@ -434,34 +434,34 @@ export default {
                 crossDomain: true,
                 cache: false,
                 // 加"transformRequest"属性对请求数据进行格式化
-                // transformRequest(obj){
-                //     var str = [];
-                //     for(var p in obj){
-                //         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                //     }
-                //     return str.join("&");
-                // },
+                transformRequest(obj){
+                    var str = [];
+                    for(var p in obj){
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    }
+                    return str.join("&");
+                },
             }).then(resolve => {
                 console.log(resolve)
                 //重新请求一次表格1
-                // this.$ajax({
-                //     method: "post",
-                //     url: "http://47.103.10.220:8081/returnCity/listAll",
-                //     dataType: "json",
-                //     //跨域
-                //     crossDomain: true,
-                //     //保证每次请求得到的数据都是最新的而不是缓存的数据
-                //     cache: false,
-                // }).then(resolve => {
-                //     this.tableData1 = resolve.data;
-                //     //将元组总数目设为数据的总数目
-                //     this.total1 = resolve.data.length;
-                //     this.visitLoading1 = false;        
-                //     console.log(resolve.data);
-                // }, reject => {
-                //     this.visitLoading1 = true;
-                //     console.log("失败",reject);
-                // })
+                this.$ajax({
+                    method: "post",
+                    url: "http://47.103.10.220:8081/returnCity/listAll",
+                    dataType: "json",
+                    //跨域
+                    crossDomain: true,
+                    //保证每次请求得到的数据都是最新的而不是缓存的数据
+                    cache: false,
+                }).then(resolve => {
+                    this.tableData1 = resolve.data;
+                    //将元组总数目设为数据的总数目
+                    this.total1 = resolve.data.length;
+                    this.visitLoading1 = false;        
+                    console.log(resolve.data);
+                }, reject => {
+                    this.visitLoading1 = true;
+                    console.log("失败",reject);
+                })
             },reject =>{
                 this.classifyLoading = true;
                 console.log("失败"+reject);
