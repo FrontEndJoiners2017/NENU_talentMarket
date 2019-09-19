@@ -113,19 +113,19 @@
 
             <!-- 查看详情 -->
             <!-- 标题 -->
-            <!-- <el-card class="visit-boxCard" v-if="detail">
+            <el-card class="visit-boxCard" v-if="detail">
                 <el-row>
                     <el-col class="Title">
                         <span>城市详情信息</span>
                     </el-col>
                 </el-row>
-            </el-card> -->
+            </el-card>
 
             <!-- 城市信息 -->
-            <!-- <el-card class="visit-boxCard detail-boxCard" v-model="cityDetail" v-if="detail">
+            <el-card class="visit-boxCard detail-boxCard" v-model="cityDetail" v-if="detail">
                 <el-row class="detailRow">
                     <el-col :span="4">
-                        <span>城市名称：{{}}</span>
+                        <span>城市名称：{{ cityDetail.cityName }}</span>
                     </el-col>
                     <el-col :span="4">
                         <span>走访次数：{{}}</span>
@@ -133,22 +133,22 @@
                 </el-row>
                 <el-row class="detailRow">
                     <el-col>
-                        <span>所属省份：{{}}</span>
+                        <span>所属省份：{{ cityDetail.province }}</span>
                     </el-col>
                 </el-row>
                 <el-row class="detailRow">
-                    <el-col>城市分级：{{}}</el-col>
+                    <el-col>城市分级：{{ cityDetail.cityRank}}</el-col>
                 </el-row>
-            </el-card> -->
+            </el-card>
             
             <!-- 单位列表 -->
-            <!-- <el-card class="visit-boxCard visitTable" v-if="detail">
+            <el-card class="visit-boxCard visitTable" v-if="detail">
                 <el-form :model="companyList">
                     <el-row class="detailRow">
                         <el-col :span="2" style="text-align: left">
                             <span>单位列表</span>
                         </el-col>
-                        <el-col :span="5" style="text-align: left">
+                        <!-- <el-col :span="5" style="text-align: left">
                             <el-form-item>
                                 <el-select v-model="companyList.year" placeholder="请选择年份">
                                     <el-option v-for="item in optionsYear" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -164,7 +164,7 @@
                         </el-col>
                         <el-col :span="3" style="text-align: left">
                             <el-button type="primary" icon="el-icon-search" @click="search()" plain>检索</el-button>
-                        </el-col>
+                        </el-col> -->
                     </el-row>
                 </el-form>
                 <el-table v-loading="detailLoading" :data="tableData3.slice((currentPage3-1)*pagesize,currentPage3*pagesize)" style="width: 100%" id="elTable">
@@ -183,7 +183,7 @@
                 <div class="pagination">
                     <el-pagination background layout="prev, pager, next" :total="total3" @current-change="current_change3"></el-pagination>
                 </div>
-            </el-card> -->
+            </el-card>
         </div>
     </el-container>
 </template>
@@ -467,13 +467,35 @@ export default {
                 console.log("失败"+reject);
             })
         },
-        //修改信息
-        changeInfor(scope) {
-            console.log(scope);
-        },
+        
         //查看详情
         detialInfor(scope) {
-            console.log(scope);
+            console.log(scope.row.id);
+            var listId = scope.row.id;
+            this.$ajax({
+                method: "post",
+                url: "http://10.108.118.124:8080//city/cityDetails?id="+listId,
+                // url: "http://47.103.10.220:8081/cityLevel/queryById",
+                // data: {
+                //     id: listId
+                // },
+                crossDomain: true,
+                cache: false,
+                transformRequest(obj){
+                    var str = [];
+                    for(var p in obj){
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    }
+                    return str.join("&");
+                },
+            }).then(resolve => {
+                console.log(resolve);
+                this.cityDetail = resolve.data;
+                this.detail = true;
+                this.normal = false;
+            }, reject => {
+                console.log(reject);
+            });
         },
     },
     created() {
