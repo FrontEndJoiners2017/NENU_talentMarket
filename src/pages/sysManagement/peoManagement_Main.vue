@@ -3,23 +3,16 @@
         <div id="peoHome">
             <!-- 搜索框部分 -->
            <el-card class="peoManage">
-               <div id="ManaTitle">
-                    <b>管理员列表</b>
-                </div>
+               <!-- <div id="ManaTitle">
+                    
+                </div> -->
                 <!-- 使用栅格设置input框的大小 -->
                 <el-form :model="peoSearchBox">
                     <el-row>
-                        <el-col :span="5">
-                            <el-form-item prop="searchInput" class="searchFormItem">
-                                <el-input v-model="peoSearchBox.searchInput" placeholder="搜索名字" id="searchIn"></el-input>
-                            </el-form-item>
+                        <el-col :span="5" id="ManaTitle">
+                            <b>管理员列表</b>
                         </el-col>
-                        <el-col :span="3">
-                            <el-form-item class="searchFormItem">
-                                <el-button type="primary" icon="el-icon-search" @click="search()" plain>搜索</el-button>
-                            </el-form-item>                        
-                        </el-col>
-                        <el-col :span="15" id="addbutton">
+                        <el-col :span="18" id="addbutton">
                             <el-form-item class="searchFormItem">
                                 <el-button v-if="mainAdmin" type="primary" icon="el-icon-plus" @click.native="addMananger=true" plain>添加管理员</el-button>
                             </el-form-item>                        
@@ -225,35 +218,35 @@ export default {
     },
     methods: {
         //搜索
-        search(){
-            console.log(this.peoSearchBox.searchInput);
-            this.$ajax({
-                method: "post",
-                url: "http://localhost:8088/testBoot/selectEducationByKeyword",
-                // keyword与后端代码中的局部变量相同
-                data:{
-                    keyword: this.peoSearchBox.searchInput,
-                },
-                crossDomain: true,
-                cache: false,
-                // 加"transformRequest"属性对请求数据进行格式化
-                transformRequest(obj){
-                    var str = [];
-                    for(var p in obj){
-                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                    }
-                    return str.join("&");
-                },
-            }).then(response => {
-                this.tableData = response.data;
-                this.total = response.data.length;
-                this.peoLoading = false;
-                console.log(response.data);
-            },reject =>{
-                this.peoLoading = true;
-                console.log("失败"+reject);
-            })
-        },
+        // search(){
+        //     console.log(this.peoSearchBox.searchInput);
+        //     this.$ajax({
+        //         method: "post",
+        //         url: "http://localhost:8088/testBoot/selectEducationByKeyword",
+        //         // keyword与后端代码中的局部变量相同
+        //         data:{
+        //             keyword: this.peoSearchBox.searchInput,
+        //         },
+        //         crossDomain: true,
+        //         cache: false,
+        //         // 加"transformRequest"属性对请求数据进行格式化
+        //         transformRequest(obj){
+        //             var str = [];
+        //             for(var p in obj){
+        //                 str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        //             }
+        //             return str.join("&");
+        //         },
+        //     }).then(response => {
+        //         this.tableData = response.data;
+        //         this.total = response.data.length;
+        //         this.peoLoading = false;
+        //         console.log(response.data);
+        //     },reject =>{
+        //         this.peoLoading = true;
+        //         console.log("失败"+reject);
+        //     })
+        // },
         // 删除
         dele(index) {
             // this.$ajax
