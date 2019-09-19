@@ -440,7 +440,7 @@ export default {
             var listId = scope.row.id;
             this.$ajax({
                 method: "post",
-                url: "http://47.103.10.220:8081/cityLevel/queryById?id="+listId,
+                url: "http://10.108.118.124:8080//city/cityDetails?id="+listId,
                 // url: "http://47.103.10.220:8081/cityLevel/queryById",
                 // data: {
                 //     id: listId
