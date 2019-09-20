@@ -319,15 +319,18 @@ export default {
                 });
             }
             else {
+                var education_yon = this.searchKind;
+                var city_name = this.searchBox.searchInput;
+                var city_visit = this.searchWeight;
                 this.$ajax({
                     method: "post",
                     url: this.backendUrl+"/visit/queryVisitByKeyword",
                     //keyword与后端代码中的局部变量相同
-                    data:{
-                        education_yon: this.searchKind,
-                        city_name: this.searchBox.searchInput,
-                        city_visit: this.searchWeight,
-                    },
+                    // data:{
+                    //     education_yon: this.searchKind,
+                    //     city_name: this.searchBox.searchInput,
+                    //     city_visit: this.searchWeight,
+                    // },
                     crossDomain: true,
                     cache: false,
                     // 加"transformRequest"属性对请求数据进行格式化
@@ -340,10 +343,10 @@ export default {
                     },
                 }).then(resolve => {
                     console.log(resolve);
-                    // this.tableData = response.data;
-                    // this.total = response.data.length;
-                    // this.classifyLoading = false;
-                    // console.log(response.data);
+                    this.tableData1 = resolve.data;
+                    //将元组总数目设为数据的总数目
+                    this.total1 = resolve.data.length;
+                    this.viewLoading = false;
                 },reject =>{
                     this.viewLoading = true;
                     console.log("失败"+reject);

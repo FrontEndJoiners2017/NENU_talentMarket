@@ -482,17 +482,17 @@ export default {
             console.log(this.submitClassify, this.submitWeight, this.submitPolicy);
             this.$ajax({
                 method: "post",
-                // url: this.backendUrl+"/cityLevel/updateCityLevel?id="+this.changeDetailInfor.id+"&cityGrading="+this.submitWeight+"&cityRank="+this.submitClassify+"&road="+this.submitPolicy,
-                url: this.backendUrl+"/cityLevel/updateCityLevel",
-                data: {
-                    //id
-                    id: this.changeDetailInfor.id,
-                    cityGrading: this.submitClassify,
-                    //权重分析
-                    cityRank: this.submitWeight,
-                    //一带一路
-                    road: this.submitPolicy,
-                },
+                url: this.backendUrl+"/cityLevel/updateCityLevel?id="+this.changeDetailInfor.id+"&cityGrading="+this.submitWeight+"&cityRank="+this.submitClassify+"&road="+this.submitPolicy,
+                // url: "http://47.103.10.220:8081/cityLevel/updateCityLevel",
+                // data: {
+                //     //id
+                //     id: this.changeDetailInfor.id,
+                //     cityGrading: this.submitClassify,
+                //     //权重分析
+                //     cityRank: this.submitWeight,
+                //     //一带一路
+                //     road: this.submitPolicy,
+                // },
                 crossDomain: true,
                 cache: false,
                 transformRequest(obj){

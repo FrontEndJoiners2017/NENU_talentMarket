@@ -3,23 +3,16 @@
     <div id="peoHome">
       <!-- 搜索框部分 -->
       <el-card class="peoManage">
-        <div id="ManaTitle">
-          <b>管理员列表</b>
-        </div>
+        <!-- <div id="ManaTitle">
+                    
+        </div>-->
         <!-- 使用栅格设置input框的大小 -->
         <el-form :model="peoSearchBox">
           <el-row>
-            <el-col :span="5">
-              <el-form-item prop="searchInput" class="searchFormItem">
-                <el-input v-model="peoSearchBox.searchInput" placeholder="搜索名字" id="searchIn"></el-input>
-              </el-form-item>
+            <el-col :span="5" id="ManaTitle">
+              <b>管理员列表</b>
             </el-col>
-            <el-col :span="3">
-              <el-form-item class="searchFormItem">
-                <el-button type="primary" icon="el-icon-search" @click="search()" plain>搜索</el-button>
-              </el-form-item>
-            </el-col>
-            <el-col :span="15" id="addbutton">
+            <el-col :span="18" id="addbutton">
               <el-form-item class="searchFormItem">
                 <el-button
                   v-if="mainAdmin"
@@ -32,6 +25,42 @@
             </el-col>
           </el-row>
         </el-form>
+      </el-card>
+
+      <!-- 管理员列表 -->
+      <el-card class="peoManage" id="peoTable">
+        <!-- 带边框的表格 -->
+        <el-table
+          v-loading="peoLoading"
+          :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+          style="width: 100%"
+          id="peoTable"
+        >
+          <el-table-column align="center" prop="realname" label="姓名"></el-table-column>
+          <el-table-column align="center" prop="email" label="注册邮箱"></el-table-column>
+          <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
+          <el-table-column align="center" prop="role" label="身份"></el-table-column>
+          <el-table-column v-if="mainAdmin" align="center" prop="operation" label="操作">
+            <template slot-scope="scope">
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                title="删除"
+                @click.native.prevent="dele(scope.$index)"
+                circle
+                plain
+              ></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div id="pagination">
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="total"
+            @current-change="current_change"
+          ></el-pagination>
+        </div>
       </el-card>
 
       <!-- 管理员列表 -->
@@ -235,11 +264,11 @@ export default {
       //管理员级别
       options: [
         {
-          value: "perms:admin",
+          value: "1",
           label: "主管理员"
         },
         {
-          value: "perms:nidie",
+          value: "0",
           label: "管理员"
         }
       ],
@@ -269,38 +298,35 @@ export default {
   },
   methods: {
     //搜索
-    search() {
-      console.log(this.peoSearchBox.searchInput);
-      this.$ajax({
-        method: "post",
-        url: this.backendUrl + "/testBoot/selectEducationByKeyword",
-        // keyword与后端代码中的局部变量相同
-        data: {
-          keyword: this.peoSearchBox.searchInput
-        },
-        crossDomain: true,
-        cache: false,
-        // 加"transformRequest"属性对请求数据进行格式化
-        transformRequest(obj) {
-          var str = [];
-          for (var p in obj) {
-            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-          }
-          return str.join("&");
-        }
-      }).then(
-        response => {
-          this.tableData = response.data;
-          this.total = response.data.length;
-          this.peoLoading = false;
-          console.log(response.data);
-        },
-        reject => {
-          this.peoLoading = true;
-          console.log("失败" + reject);
-        }
-      );
-    },
+    // search(){
+    //     console.log(this.peoSearchBox.searchInput);
+    //     this.$ajax({
+    //         method: "post",
+    //         url: "http://localhost:8088/testBoot/selectEducationByKeyword",
+    //         // keyword与后端代码中的局部变量相同
+    //         data:{
+    //             keyword: this.peoSearchBox.searchInput,
+    //         },
+    //         crossDomain: true,
+    //         cache: false,
+    //         // 加"transformRequest"属性对请求数据进行格式化
+    //         transformRequest(obj){
+    //             var str = [];
+    //             for(var p in obj){
+    //                 str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+    //             }
+    //             return str.join("&");
+    //         },
+    //     }).then(response => {
+    //         this.tableData = response.data;
+    //         this.total = response.data.length;
+    //         this.peoLoading = false;
+    //         console.log(response.data);
+    //     },reject =>{
+    //         this.peoLoading = true;
+    //         console.log("失败"+reject);
+    //     })
+    // },
     // 删除
     dele(index) {
       // this.$ajax
@@ -383,14 +409,14 @@ export default {
     },
     //确定添加
     submit(addForm) {
-    //     let unData = {
-    //             realName: this.addForm.name,
-    //           email: this.addForm.email,
-    //           tel: this.addForm.phoneNumber,
-    //           perms: this.addForm.level,
-    //           userName: this.addForm.account,
-    //           password: this.addForm.pwd
-    // },
+      //     let unData = {
+      //             realName: this.addForm.name,
+      //           email: this.addForm.email,
+      //           tel: this.addForm.phoneNumber,
+      //           perms: this.addForm.level,
+      //           userName: this.addForm.account,
+      //           password: this.addForm.pwd
+      // },
       this.$refs[addForm].validate(valid => {
         console.log(this.addForm.name);
         console.log(this.addForm.email);
@@ -405,7 +431,7 @@ export default {
           this.$ajax({
             method: "post",
             // url: this.backendUrl+"/addUser",
-            url: backendUrl+"/insertUser?",
+            url: backendUrl + "/insertUser?",
             data: {
               realName: this.addForm.name,
               email: this.addForm.email,

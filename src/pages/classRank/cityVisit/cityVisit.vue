@@ -113,19 +113,19 @@
 
             <!-- 查看详情 -->
             <!-- 标题 -->
-            <!-- <el-card class="visit-boxCard" v-if="detail">
+            <el-card class="visit-boxCard" v-if="detail">
                 <el-row>
                     <el-col class="Title">
                         <span>城市详情信息</span>
                     </el-col>
                 </el-row>
-            </el-card> -->
+            </el-card>
 
             <!-- 城市信息 -->
-            <!-- <el-card class="visit-boxCard detail-boxCard" v-model="cityDetail" v-if="detail">
+            <el-card class="visit-boxCard detail-boxCard" v-model="cityDetail" v-if="detail">
                 <el-row class="detailRow">
                     <el-col :span="4">
-                        <span>城市名称：{{}}</span>
+                        <span>城市名称：{{ cityDetail.cityName }}</span>
                     </el-col>
                     <el-col :span="4">
                         <span>走访次数：{{}}</span>
@@ -133,22 +133,22 @@
                 </el-row>
                 <el-row class="detailRow">
                     <el-col>
-                        <span>所属省份：{{}}</span>
+                        <span>所属省份：{{ cityDetail.province }}</span>
                     </el-col>
                 </el-row>
                 <el-row class="detailRow">
-                    <el-col>城市分级：{{}}</el-col>
+                    <el-col>城市分级：{{ cityDetail.cityRank}}</el-col>
                 </el-row>
-            </el-card> -->
+            </el-card>
             
             <!-- 单位列表 -->
-            <!-- <el-card class="visit-boxCard visitTable" v-if="detail">
+            <el-card class="visit-boxCard visitTable" v-if="detail">
                 <el-form :model="companyList">
                     <el-row class="detailRow">
                         <el-col :span="2" style="text-align: left">
                             <span>单位列表</span>
                         </el-col>
-                        <el-col :span="5" style="text-align: left">
+                        <!-- <el-col :span="5" style="text-align: left">
                             <el-form-item>
                                 <el-select v-model="companyList.year" placeholder="请选择年份">
                                     <el-option v-for="item in optionsYear" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -164,7 +164,7 @@
                         </el-col>
                         <el-col :span="3" style="text-align: left">
                             <el-button type="primary" icon="el-icon-search" @click="search()" plain>检索</el-button>
-                        </el-col>
+                        </el-col> -->
                     </el-row>
                 </el-form>
                 <el-table v-loading="detailLoading" :data="tableData3.slice((currentPage3-1)*pagesize,currentPage3*pagesize)" style="width: 100%" id="elTable">
@@ -183,7 +183,7 @@
                 <div class="pagination">
                     <el-pagination background layout="prev, pager, next" :total="total3" @current-change="current_change3"></el-pagination>
                 </div>
-            </el-card> -->
+            </el-card>
         </div>
     </el-container>
 </template>
@@ -415,11 +415,11 @@ export default {
         //进行搜索
         search(){
             console.log(this.submitYear, this.submitKind);
-            let postData = Qs.stringify({
-                education: this.submitKind,
-                Syear: this.submitYear,
-                city_name: this.searchBox.searchInput,
-            })
+            // let postData = Qs.stringify({
+            //     education: this.submitKind,
+            //     Syear: this.submitYear,
+            //     city_name: this.searchBox.searchInput,
+            // })
             this.$ajax({
                 method: "post",
                 // url: this.backendUrl+"/returnCity/select?education="+this.submitKind+"&Syear="+this.submitYear+"&city_name="+this.searchBox.searchInput,
@@ -434,46 +434,68 @@ export default {
                 crossDomain: true,
                 cache: false,
                 // 加"transformRequest"属性对请求数据进行格式化
-                // transformRequest(obj){
-                //     var str = [];
-                //     for(var p in obj){
-                //         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                //     }
-                //     return str.join("&");
-                // },
+                transformRequest(obj){
+                    var str = [];
+                    for(var p in obj){
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    }
+                    return str.join("&");
+                },
             }).then(resolve => {
                 console.log(resolve)
                 //重新请求一次表格1
-                // this.$ajax({
-                //     method: "post",
-                //     url: this.backendUrl+"/returnCity/listAll",
-                //     dataType: "json",
-                //     //跨域
-                //     crossDomain: true,
-                //     //保证每次请求得到的数据都是最新的而不是缓存的数据
-                //     cache: false,
-                // }).then(resolve => {
-                //     this.tableData1 = resolve.data;
-                //     //将元组总数目设为数据的总数目
-                //     this.total1 = resolve.data.length;
-                //     this.visitLoading1 = false;        
-                //     console.log(resolve.data);
-                // }, reject => {
-                //     this.visitLoading1 = true;
-                //     console.log("失败",reject);
-                // })
+                this.$ajax({
+                    method: "post",
+                    url: this.backendUrl+"/returnCity/listAll",
+                    dataType: "json",
+                    //跨域
+                    crossDomain: true,
+                    //保证每次请求得到的数据都是最新的而不是缓存的数据
+                    cache: false,
+                }).then(resolve => {
+                    this.tableData1 = resolve.data;
+                    //将元组总数目设为数据的总数目
+                    this.total1 = resolve.data.length;
+                    this.visitLoading1 = false;        
+                    console.log(resolve.data);
+                }, reject => {
+                    this.visitLoading1 = true;
+                    console.log("失败",reject);
+                })
             },reject =>{
                 this.classifyLoading = true;
                 console.log("失败"+reject);
             })
         },
-        //修改信息
-        changeInfor(scope) {
-            console.log(scope);
-        },
+        
         //查看详情
         detialInfor(scope) {
-            console.log(scope);
+            console.log(scope.row.id);
+            var listId = scope.row.id;
+            this.$ajax({
+                method: "post",
+                url: "http://10.108.118.124:8080//city/cityDetails?id="+listId,
+                // url: "http://47.103.10.220:8081/cityLevel/queryById",
+                // data: {
+                //     id: listId
+                // },
+                crossDomain: true,
+                cache: false,
+                transformRequest(obj){
+                    var str = [];
+                    for(var p in obj){
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    }
+                    return str.join("&");
+                },
+            }).then(resolve => {
+                console.log(resolve);
+                this.cityDetail = resolve.data;
+                this.detail = true;
+                this.normal = false;
+            }, reject => {
+                console.log(reject);
+            });
         },
     },
     created() {
