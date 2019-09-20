@@ -208,7 +208,7 @@ export default {
       let searchName = "city_name=" + this.city_name;
       // 最多128个字符
       let searchUrl =
-        "http://47.103.10.220:8081/studentFrom/select?" +
+        this.backendUrl+"/studentFrom/select?" +
         searchType +
         "&" +
         searchYear +
@@ -251,7 +251,7 @@ export default {
       this.$ajax({
         method: "post",
         url:
-          "http://10.108.118.124:8080/city/cityDetails?cityName=" +
+          this.backendUrl+"/city/cityDetails?cityName=" +
           self.selectedName,
         dataType: "json",
         // 跨域
@@ -396,7 +396,7 @@ export default {
     this.listLoading = true;
     this.$ajax({
       method: "get",
-      url: "http://47.103.10.220:8081/studentFrom/studentFromList",
+      url: this.backendUrl+"/studentFrom/studentFromList",
       dataType: "json",
       // 跨域
       crossDomain: true,

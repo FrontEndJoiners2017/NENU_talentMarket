@@ -321,7 +321,7 @@ export default {
             else {
                 this.$ajax({
                     method: "post",
-                    url: "http://47.103.10.220:8081/visit/queryVisitByKeyword",
+                    url: this.backendUrl+"/visit/queryVisitByKeyword",
                     //keyword与后端代码中的局部变量相同
                     data:{
                         education_yon: this.searchKind,
@@ -356,8 +356,8 @@ export default {
             var listId = scope.row.id;
             this.$ajax({
                 method: "post",
-                url: "http://47.103.10.220:8081/cityLevel/queryById?id="+listId,
-                // url: "http://47.103.10.220:8081/cityLevel/queryById",
+                url: this.backendUrl+"/cityLevel/queryById?id="+listId,
+                // url: this.backendUrl+"/cityLevel/queryById",
                 // data: {
                 //     id: listId
                 // },
@@ -383,7 +383,7 @@ export default {
     created() {
         this.$ajax({
             method: "post",
-            url: "http://47.103.10.220:8081/visit/listAllVisit",
+            url: this.backendUrl+"/visit/listAllVisit",
             dataType: "json",
             //跨域
             crossDomain: true,

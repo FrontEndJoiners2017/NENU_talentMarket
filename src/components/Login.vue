@@ -49,7 +49,10 @@ export default {
       let self = this;
       xmlhttp.open(
         "POST",
-        "http://47.103.10.220:8080/login?username="+this.userInfo.username+"&password="+this.userInfo.password,
+        "http://10.108.118.124:8084/login?username=" +
+          this.userInfo.username +
+          "&password=" +
+          this.userInfo.password,
         true
       );
       xmlhttp.setRequestHeader(
@@ -60,19 +63,33 @@ export default {
       xmlhttp.onreadystatechange = doResult; //设置回调函数
       function doResult() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-          //将登录状态写入store.state
-          self.$store.dispatch("loginAction", {
-            loginInfo: self.userInfo
-          });
-          //提示登录成功的信息
-          console.log("登录成功！");
-          //进入DFU页面
-          self.$router.push({ name: "DFU" });
+          let data = JSON.parse(xmlhttp.responseText);
+          console.log(data);
+          if (data.data == "ok") {
+            // 将登录状态写入store.state
+            self.$store.dispatch("loginAction", {
+              loginInfo: self.userInfo
+            });
+            // 提示登录成功的信息
+            console.log("登录成功！");
+            //进入DFU页面
+            self.$router.push({ name: "DFU" });
+          } else if (data.data == "no such user") {
+            self.$notify.error({
+              title: "登录失败",
+              message: "没有此用户"
+            });
+          } else if (data.data == "wrong password") {
+            self.$notify.error({
+              title: "登录失败",
+              message: "密码错误"
+            });
+          }
         } else if (xmlhttp.readyState == 4 && xmlhttp.status != 200) {
           //提示登录失败的信息
           self.$notify.error({
             title: "登录失败",
-            message: "请检查账号和密码"
+            message: "请检查网络"
           });
           console.log("登录失败！");
           return false;

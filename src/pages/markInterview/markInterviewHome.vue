@@ -120,7 +120,7 @@ export default {
       //得到全部数据
       axios({
         method:'get',
-        url:'http://47.103.10.220:8084/interview/listAll',
+        url:this.backendUrl+'/interview/listAll',
       }).then(response=>{
         let len=response.data.visitorList.length
         for (let i = 0; i < len; i++) {
@@ -166,7 +166,7 @@ export default {
         // })
         axios({
           method:'post',
-          url:'http://47.103.10.220:8084/interview/queryInterview?year='+this.year+"&keyword="+this.keyword,
+          url:this.backendUrl+'/interview/queryInterview?year='+this.year+"&keyword="+this.keyword,
           // data:data,
         }).then(response=>{
           console.log(response)

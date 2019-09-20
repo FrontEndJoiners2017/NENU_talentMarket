@@ -256,7 +256,7 @@ export default {
         // let data=this.form
         axios({
           method:'post',
-          url:'http://47.103.10.220:8084/interview/addInterview',
+          url:this.backendUrl+'/interview/addInterview',
           data:data,
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         }).then(response=>{

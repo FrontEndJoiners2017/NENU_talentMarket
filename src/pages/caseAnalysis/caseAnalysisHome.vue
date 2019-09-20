@@ -57,14 +57,10 @@ export default {
       total: 0
     };
   },
-  created() {
-    console.log("backendUrl:");
-    console.log(backendUrl);
-  },
   mounted() {
     Axios({
       method: "get",
-      url: "http://47.103.10.220:8081/company/listCompany",
+      url: this.backendUrl+"/company/listCompany",
       crossDomain: true,
       cache: false
     })
@@ -100,7 +96,7 @@ export default {
       Axios({
         mehtod: "post",
         url:
-          "http://47.103.10.220:8081/company/selectCompany?keyword=" +
+          this.backendUrl+"/company/selectCompany?keyword=" +
           this.keyword
       })
         .then(response => {

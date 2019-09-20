@@ -422,8 +422,8 @@ export default {
             })
             this.$ajax({
                 method: "post",
-                // url: "http://47.103.10.220:8081/returnCity/select?education="+this.submitKind+"&Syear="+this.submitYear+"&city_name="+this.searchBox.searchInput,
-                url: "http://47.103.10.220:8081/returnCity/select",
+                // url: this.backendUrl+"/returnCity/select?education="+this.submitKind+"&Syear="+this.submitYear+"&city_name="+this.searchBox.searchInput,
+                url: this.backendUrl+"/returnCity/select",
                 //keyword与后端代码中的局部变量相同
                 // data:{
                 //     education: this.submitKind,
@@ -446,7 +446,7 @@ export default {
                 //重新请求一次表格1
                 // this.$ajax({
                 //     method: "post",
-                //     url: "http://47.103.10.220:8081/returnCity/listAll",
+                //     url: this.backendUrl+"/returnCity/listAll",
                 //     dataType: "json",
                 //     //跨域
                 //     crossDomain: true,
@@ -480,7 +480,7 @@ export default {
         //表格1
         this.$ajax({
             method: "post",
-            url: "http://47.103.10.220:8081/returnCity/listAll",
+            url: this.backendUrl+"/returnCity/listAll",
             dataType: "json",
             //跨域
             crossDomain: true,

@@ -75,7 +75,7 @@ export default {
       let time=this.$route.params.time
       axios({
           method:'post',
-          url:'http://47.103.10.220:8084/interview/queryByCnAndVn?companyName='+companyName+"&visitorName="+visitorName+"&time="+time,
+          url:this.backendUrl+'/interview/queryByCnAndVn?companyName='+companyName+"&visitorName="+visitorName+"&time="+time,
           crossDomain: true,
           cache: false,
         }).then(response=>{
@@ -98,7 +98,7 @@ export default {
         let data=qs.stringify(this.form)
         axios({
           method:'post',
-          url:'http://47.103.10.220:8084/interview/updateInterview',
+          url:this.backendUrl+'/interview/updateInterview',
           data:data,
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
           crossDomain: true,

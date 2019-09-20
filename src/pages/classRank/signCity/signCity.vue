@@ -210,7 +210,7 @@ export default {
       let searchsignWeight = "signValue=" + this.search.signWeight;
       // 最多128个字符
       let searchUrl =
-        "http://10.108.118.124:8080/city/queryCityByCondition?" +
+        this.backendUrl+"/city/queryCityByCondition?" +
         searchType +
         "&" +
         searchYear +
@@ -290,7 +290,7 @@ export default {
       this.$ajax({
         method: "post",
         url:
-          "http://10.108.118.124:8080/city/cityDetails?cityName=" +
+          self.backendUrl+"/city/cityDetails?cityName=" +
           self.selectedName,
         dataType: "json",
         // 跨域
@@ -435,7 +435,7 @@ export default {
     this.listLoading = true;
     this.$ajax({
       method: "post",
-      url: "http://10.108.118.124:8080/city/citySign?educationYon=1",
+      url: this.backendUrl+"/city/citySign?educationYon=1",
       dataType: "json",
       // 跨域
       crossDomain: true,

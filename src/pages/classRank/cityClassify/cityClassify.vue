@@ -352,7 +352,7 @@ export default {
             console.log(this.searchBox.searchInput);
             this.$ajax({
                 method: "post",
-                url: "http://47.103.10.220:8081/cityLevel/queryByKeyword?key="+this.searchBox.searchInput,
+                url: this.backendUrl+"/cityLevel/queryByKeyword?key="+this.searchBox.searchInput,
                 //keyword与后端代码中的局部变量相同
                 // data:{
                 //     key: this.searchBox.searchInput,
@@ -440,8 +440,8 @@ export default {
             var listId = scope.row.id;
             this.$ajax({
                 method: "post",
-                url: "http://47.103.10.220:8081/cityLevel/queryById?id="+listId,
-                // url: "http://47.103.10.220:8081/cityLevel/queryById",
+                url: this.backendUrl+"/cityLevel/queryById?id="+listId,
+                // url: this.backendUrl+"/cityLevel/queryById",
                 // data: {
                 //     id: listId
                 // },
@@ -482,8 +482,8 @@ export default {
             console.log(this.submitClassify, this.submitWeight, this.submitPolicy);
             this.$ajax({
                 method: "post",
-                // url: "http://47.103.10.220:8081/cityLevel/updateCityLevel?id="+this.changeDetailInfor.id+"&cityGrading="+this.submitWeight+"&cityRank="+this.submitClassify+"&road="+this.submitPolicy,
-                url: "http://47.103.10.220:8084/cityLevel/updateCityLevel",
+                // url: this.backendUrl+"/cityLevel/updateCityLevel?id="+this.changeDetailInfor.id+"&cityGrading="+this.submitWeight+"&cityRank="+this.submitClassify+"&road="+this.submitPolicy,
+                url: this.backendUrl+"/cityLevel/updateCityLevel",
                 data: {
                     //id
                     id: this.changeDetailInfor.id,
@@ -513,7 +513,7 @@ export default {
                 //再重新请求数据
                 this.$ajax({
                     method: "post",
-                    url: "http://47.103.10.220:8084/cityLevel/listAll",
+                    url: this.backendUrl+"/cityLevel/listAll",
                     dataType: "json",
                     //跨域
                     crossDomain: true,
@@ -542,7 +542,7 @@ export default {
     created() {
         this.$ajax({
             method: "post",
-            url: "http://47.103.10.220:8084/cityLevel/listAll",
+            url: this.backendUrl+"/cityLevel/listAll",
             dataType: "json",
             //跨域
             crossDomain: true,

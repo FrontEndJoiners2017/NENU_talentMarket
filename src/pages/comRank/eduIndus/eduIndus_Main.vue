@@ -153,7 +153,7 @@ export default {
                 if(this.radioSelected == 3) {
                     this.$ajax({
                         method: "post",
-                        url: "http://47.103.10.220:8081/education/queryEducationByKeywordString?keyword="+this.searchBox.searchInput,
+                        url: this.backendUrl+"/education/queryEducationByKeywordString?keyword="+this.searchBox.searchInput,
                         //keyword与后端代码中的局部变量相同
                         // data:{
                         //     keyword: this.searchBox.searchInput,
@@ -183,7 +183,7 @@ export default {
                 else if(this.radioSelected == 6) {
                     this.$ajax({
                         method: "post",
-                        url: "http://47.103.10.220:8081/education/queryEducationByKeywordInt",
+                        url: this.backendUrl+"/education/queryEducationByKeywordInt",
                         //keyword与后端代码中的局部变量相同
                         data:{
                             keyword: this.searchBox.searchInput,
@@ -230,7 +230,7 @@ export default {
     created() {
         this.$ajax({
             method: "post",
-            url: "http://47.103.10.220:8081/education/listAllEducation",
+            url: this.backendUrl+"/education/listAllEducation",
             dataType: "json",
             //跨域
             crossDomain: true,

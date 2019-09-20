@@ -197,7 +197,7 @@ export default {
         //   })
           axios({
             method:'post',
-            url:'http://47.103.10.220:8081/student/listStudentByCompany?companyIdStr=2',
+            url:this.backendUrl+'/student/listStudentByCompany?companyIdStr=2',
             crossDomain: true,
             cache: false,
             //   data:data
@@ -223,7 +223,7 @@ export default {
           })
           axios({
             method:'post',
-            url:'http://47.103.10.220:8084/interview/queryCompany?companyName=join',
+            url:this.backendUrl+'/interview/queryCompany?companyName=join',
             crossDomain: true,
             cache: false,
           }).then(response=>{
@@ -270,7 +270,7 @@ export default {
         searchSign(){
             axios({
                 method:'post',
-                url:'http://47.103.10.220:8081/student/queryStudentByYear?studentYearStr='+this.signSearch,
+                url:this.backendUrl+'/student/queryStudentByYear?studentYearStr='+this.signSearch,
                 crossDomain: true,
                 cache: false,
             }).then(response=>{
