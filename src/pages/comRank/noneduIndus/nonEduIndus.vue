@@ -11,7 +11,7 @@
                     <el-row>
                         <el-col :span="5">
                             <el-form-item prop="searchInput">
-                                <el-input v-model="searchBox.searchInput" placeholder="关键字搜索" id="searchIn"></el-input>
+                                <el-input v-model="searchBox.searchInput" placeholder="城市名模糊搜索" id="searchIn"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="4">
@@ -76,7 +76,7 @@ export default {
         return{
             input: '',
             //详细数据/数据分级
-            radio: '0',
+            radio: 3,
             tableData: [],
             //当前页数
             currentPage: 1,
@@ -93,7 +93,7 @@ export default {
                 detailOrClassification: '',
             },
             //搜索单选变量
-            radioSelected: 0,
+            radioSelected: 3,
             //加载
             nonLoading: true,
         }

@@ -41,11 +41,11 @@
                             <el-button type="text" @click="detialInfor(scope)">查看</el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="修改">
+                    <!-- <el-table-column align="center" label="修改">
                         <template slot-scope="scope">
                             <el-button type="info" icon="el-icon-edit" @click="changeInfor(scope)" plain>修改</el-button>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                 </el-table>
                 <!-- 分页 -->
                 <div id="pagination">
@@ -440,7 +440,7 @@ export default {
             var listId = scope.row.id;
             this.$ajax({
                 method: "post",
-                url: this.backendUrl+"/cityLevel/queryById?id="+listId,
+                url: "http://10.108.118.124:8888·/city/cityDetails?id="+listId,
                 // url: this.backendUrl+"/cityLevel/queryById",
                 // data: {
                 //     id: listId
@@ -483,7 +483,7 @@ export default {
             this.$ajax({
                 method: "post",
                 url: this.backendUrl+"/cityLevel/updateCityLevel?id="+this.changeDetailInfor.id+"&cityGrading="+this.submitWeight+"&cityRank="+this.submitClassify+"&road="+this.submitPolicy,
-                // url: "http://47.103.10.220:8081/cityLevel/updateCityLevel",
+                // url: this.backendUrl+"/cityLevel/updateCityLevel",
                 // data: {
                 //     //id
                 //     id: this.changeDetailInfor.id,

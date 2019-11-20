@@ -9,7 +9,7 @@
         </el-row>
         <el-row id="selectBoxs">
           <!-- 教育类别 -->
-          <el-col :span="5">
+          <el-col :span="4">
             <el-form-item>
               <!-- v-model实现双向绑定，select选择框里面的数据绑定search数组里对应的对象 -->
               <el-select v-model="search.educationType" placeholder="教育类别" value-key="value">
@@ -22,9 +22,8 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4"></el-col>
           <!-- 年份 -->
-          <el-col :span="5">
+          <el-col :span="4">
             <el-form-item>
               <el-select v-model="search.year" placeholder="年份" value-key="value">
                 <el-option
@@ -37,7 +36,7 @@
             </el-form-item>
           </el-col>
           <!-- 城市分级 -->
-          <el-col :span="5">
+          <!-- <el-col :span="5">
             <el-form-item>
               <el-select v-model="search.exWeight" placeholder="城市分级" value-key="value">
                 <el-option
@@ -48,7 +47,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="3">
             <el-button
               type="primary"
@@ -72,7 +71,12 @@
       >
         <el-table-column type="index" label="序号" width="90px"></el-table-column>
         <el-table-column prop="cityYear" label="年份"></el-table-column>
-        <el-table-column prop="educationYon" label="类型"></el-table-column>
+        <el-table-column label="类型">
+          <template slot-scope="scope">
+            <span v-if="scope.row.educationYon==1">教育类</span>
+            <span v-if="scope.row.educationYon==2">非教育类</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="cityName" label="城市"></el-table-column>
         <el-table-column prop="province" label="省份"></el-table-column>
         <el-table-column prop="cityExceptation" label="意向人数"></el-table-column>
@@ -100,8 +104,7 @@
     <!-- 对话框/v-if实现查看详情功能 -->
     <el-card class="box-card" v-if="Detail">
       <span class="TopTitle">城市详细信息</span>
-    </el-card>
-    <el-card class="box-card" v-if="Detail">
+      <hr>
       <el-row class="detailRow">
         <el-col :span="4">
           <span>城市名称：{{selectedName}}</span>
@@ -162,9 +165,7 @@
           </el-col>-->
         </el-row>
       </el-form>
-    </el-card>
-    <!-- 详细信息列表 -->
-    <el-card class="box-card" v-if="Detail">
+      <hr>
       <el-table
         class="Table"
         :data="DetailTable.slice((currentPage2-1)*pagesize,currentPage2*pagesize)"
@@ -326,6 +327,10 @@ export default {
       form: {
         educationType: [
           {
+            value: "0",
+            label: "全部类别"
+          },
+          {
             value: "1",
             label: "教育类"
           },
@@ -369,9 +374,9 @@ export default {
       },
       // select双向绑定的数组对象
       search: {
-        educationType: "",
-        year: "",
-        exWeight: ""
+        educationType: "0",
+        year: "2019",
+        // exWeight: "E"
       },
       // -------------------------详细页面部分---------------------------------
       // 详细信息表格
@@ -422,7 +427,7 @@ export default {
     this.listLoading = true;
     this.$ajax({
       method: "get",
-      url: this.backendUrl+"/city/cityEx?educationType=1",
+      url: this.backendUrl+"/city/cityEx?year=2019&educationType=1",
       dataType: "json",
       // 跨域
       crossDomain: true,
@@ -444,19 +449,13 @@ export default {
       }
     );
   }
-  // ,
-  // 	mounted() {
-  // 		this.getUsers();
-  // 	}
 };
 </script>
 
 <style scoped>
 /* card设置 */
-/* card设置 */
 .box-card {
   width: 100%;
-  border-radius: 10px;
   /* padding-left: 1%; */
 }
 /* 标题 */

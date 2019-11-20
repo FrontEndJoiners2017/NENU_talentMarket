@@ -26,43 +26,6 @@
           </el-row>
         </el-form>
       </el-card>
-
-      <!-- 管理员列表 -->
-      <el-card class="peoManage" id="peoTable">
-        <!-- 带边框的表格 -->
-        <el-table
-          v-loading="peoLoading"
-          :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-          style="width: 100%"
-          id="peoTable"
-        >
-          <el-table-column align="center" prop="realname" label="姓名"></el-table-column>
-          <el-table-column align="center" prop="email" label="注册邮箱"></el-table-column>
-          <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
-          <el-table-column align="center" prop="role" label="身份"></el-table-column>
-          <el-table-column v-if="mainAdmin" align="center" prop="operation" label="操作">
-            <template slot-scope="scope">
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                title="删除"
-                @click.native.prevent="dele(scope.$index)"
-                circle
-                plain
-              ></el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div id="pagination">
-          <el-pagination
-            background
-            layout="prev, pager, next"
-            :total="total"
-            @current-change="current_change"
-          ></el-pagination>
-        </div>
-      </el-card>
-
       <!-- 管理员列表 -->
       <el-card class="peoManage" id="peoTable">
         <!-- 带边框的表格 -->
@@ -73,6 +36,7 @@
           id="peoTable"
         >
           <el-table-column align="center" prop="realName" label="姓名"></el-table-column>
+          <el-table-column align="center" prop="username" label="账户名"></el-table-column>
           <el-table-column align="center" prop="email" label="注册邮箱"></el-table-column>
           <el-table-column align="center" prop="tel" label="联系方式"></el-table-column>
           <el-table-column align="center" prop="role" label="身份"></el-table-column>
@@ -430,8 +394,8 @@ export default {
           //此处有一请求
           this.$ajax({
             method: "post",
-            // url: this.backendUrl+"/addUser",
-            url: backendUrl + "/insertUser?",
+            url: this.backendUrl+"/addUser",
+            // url: this.backendUrl + "/insertUser?",
             data: {
               realName: this.addForm.name,
               email: this.addForm.email,

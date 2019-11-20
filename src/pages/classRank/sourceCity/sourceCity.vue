@@ -11,7 +11,7 @@
         </el-row>
         <el-row id="selectBoxs">
           <!-- 教育类别 -->
-          <el-col :span="5">
+          <el-col :span="4">
             <el-form-item>
               <!-- v-model实现双向绑定，select选择框里面的数据绑定search数组里对应的对象 -->
               <el-select v-model="search.educationType" placeholder="教育类别" value-key="value">
@@ -24,9 +24,8 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4"></el-col>
           <!-- 年份 -->
-          <el-col :span="5">
+          <el-col :span="4">
             <el-form-item>
               <el-select v-model="search.year" placeholder="年份" value-key="value">
                 <el-option
@@ -39,16 +38,17 @@
             </el-form-item>
           </el-col>
           <!-- 城市分级,需要前端自己filterable搜索，Select 会找出所有label属性包含输入值的选项。 -->
-          <el-col :span="5">
+          <el-col :span="4">
             <el-form-item>
-              <el-select v-model="search.exWeight" placeholder="城市分级" value-key="value" filterable>
+              <el-input v-model="search.city_name" placeholder="省份/城市名称"></el-input>
+              <!-- <el-select v-model="search.city_name" placeholder="省份/城市名称" value-key="value" filterable>
                 <el-option
                   v-for="item in form.exWeight"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
                 ></el-option>
-              </el-select>
+              </el-select> -->
             </el-form-item>
           </el-col>
           <el-col :span="3">
@@ -72,9 +72,14 @@
         highlight-current-row
         v-loading="listLoading"
       >
+        <el-table-column type="index" width="50" label="序号"></el-table-column>
         <el-table-column prop="city_year" label="年份"></el-table-column>
-        <el-table-column type="index" label="序号" width="90px"></el-table-column>
-        <el-table-column prop="education_yon" label="类型"></el-table-column>
+        <el-table-column label="类型">
+          <template slot-scope="scope">
+            <span v-if="scope.row.education_yon==1">教育类</span>
+            <span v-else-if="scope.row.education_yon==2">非教育类</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="city_name" label="城市"></el-table-column>
         <el-table-column prop="province" label="省份"></el-table-column>
         <el-table-column prop="city_studentFrom" label="生源人数"></el-table-column>
@@ -83,7 +88,7 @@
         <!-- 查看详细信息 -->
         <el-table-column prop="details" label="详细信息">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="detialInfor(scope); Detail=true">查看</el-button>
+            <el-button type="text" size="small" @click="detialInfor(scope.row); Detail=true">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -124,7 +129,7 @@
           <el-col :span="3">
             <span class="TopTitle">单位列表</span>
           </el-col>
-            <!-- 详细单位信息select选择器，因为后端数据库有问题，不能实现 -->
+          <!-- 详细单位信息select选择器，因为后端数据库有问题，不能实现 -->
           <!-- <el-col :span="5">
             <el-form-item>
               <el-select v-model="selectCompany.year" placeholder="请选择年份">
@@ -159,7 +164,7 @@
                 v-on:click="findCompany"
               >检索</el-button>
             </el-form-item>
-          </el-col> -->
+          </el-col>-->
         </el-row>
       </el-form>
     </el-card>
@@ -182,7 +187,7 @@
         <el-table-column prop="visitPeople" label="走访人"></el-table-column>
         <!-- 下面这俩XY没写好,prop字段名不对 -->
         <!-- <el-table-column prop="lectures" label="来校宣讲次数"></el-table-column>
-        <el-table-column prop="boolean" label="走访情况"></el-table-column> -->
+        <el-table-column prop="boolean" label="走访情况"></el-table-column>-->
       </el-table>
       <!-- 详细信息分页 -->
       <el-pagination
@@ -205,10 +210,11 @@ export default {
       this.listLoading = true;
       let searchType = "education=" + this.search.educationType;
       let searchYear = "Syear=" + this.search.year;
-      let searchName = "city_name=" + this.city_name;
+      let searchName = "city_name=" + this.search.city_name;
       // 最多128个字符
       let searchUrl =
-        this.backendUrl+"/studentFrom/select?" +
+        this.backendUrl +
+        "/studentFrom/select?" +
         searchType +
         "&" +
         searchYear +
@@ -241,18 +247,12 @@ export default {
     // 查看详细页面的检索
     // findCompany() {},
     // 查看
-    detialInfor(scope) {
-      // 使点击的那行的城市名出现在查看单位详情页上
-      this.selectedName = scope.row.cityName;
-      console.log(scope);
-      // 查看详细单位页面
-      this.listLoading = true;
+    detialInfor(row) {
       let self = this;
       this.$ajax({
         method: "post",
         url:
-          this.backendUrl+"/city/cityDetails?cityName=" +
-          self.selectedName,
+          this.backendUrl + "/city/cityDetails?cityName=" + self.selectedName,
         dataType: "json",
         // 跨域
         crossDomain: true,
@@ -262,10 +262,24 @@ export default {
         resolve => {
           // 收到数据后取消loading
           this.detailLoading = false;
-          this.DetailTable = resolve.data;
-          //分页设置，将元组总数目设为数据的总数目
-          this.total2 = resolve.data.length;
-          console.log(resolve.data);
+          console.log(resolve.data.length);
+          if (resolve.data.length == 0) {
+            this.$notify.info({
+              title: "暂无数据",
+              message: "该城市暂无单位数据"
+            });
+            return 0;
+          } else {
+            // 使点击的那行的城市名出现在查看单位详情页上
+            this.selectedName = row.cityName;
+            console.log(row);
+            // 查看详细单位页面
+            this.listLoading = true;
+            this.DetailTable = resolve.data;
+            //分页设置，将元组总数目设为数据的总数目
+            this.total2 = resolve.data.length;
+            console.log(resolve.data);
+          }
         },
         reject => {
           console.log("失败", reject);
@@ -301,11 +315,15 @@ export default {
       form: {
         educationType: [
           {
-            value: "1",
+            value: "0",
+            label: "全部类别"
+          },
+          {
+            value: "教育类",
             label: "教育类"
           },
           {
-            value: "2",
+            value: "非教育类",
             label: "非教育类"
           }
         ],
@@ -344,9 +362,9 @@ export default {
       },
       // select双向绑定的数组对象
       search: {
-        educationType: "",
-        year: "",
-        exWeight: ""
+        educationType: "0",
+        year: "2019",
+        city_name: ""
       },
       // -------------------------详细页面部分---------------------------------
       // 详细信息表格
@@ -396,7 +414,7 @@ export default {
     this.listLoading = true;
     this.$ajax({
       method: "get",
-      url: this.backendUrl+"/studentFrom/studentFromList",
+      url: this.backendUrl + "/studentFrom/studentFromList",
       dataType: "json",
       // 跨域
       crossDomain: true,
@@ -426,7 +444,6 @@ export default {
 /* card设置 */
 .box-card {
   width: 100%;
-  border-radius: 10px;
   /* padding-left: 1%; */
 }
 /* 标题 */

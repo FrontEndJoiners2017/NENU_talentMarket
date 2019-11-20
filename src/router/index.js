@@ -6,8 +6,8 @@ import Login from '@/components/Login'   //登录页面
 import NotFound from '@/components/NotFound'    //NotFound
 import DFU from '@/components/DFU'    //主页 描述页面
 // 城市综合排名√
-import eduIndus from '@/pages/comRank/eduIndus/eduIndus_Main'
-import nonEduIndus from '@/pages/comRank/nonEduIndus/noneduIndus_Main'
+import eduIndus from '@/pages/comRank/eduIndus/eduIndus'
+import nonEduIndus from '@/pages/comRank/nonEduIndus/noneduIndus'
 // 城市分类排名
 import signCity from '@/pages/classRank/signCity/signCity'
 import intentionCity from '@/pages/classRank/intentionCity/intentionCity'

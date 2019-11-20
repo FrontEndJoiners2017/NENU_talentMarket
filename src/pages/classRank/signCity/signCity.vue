@@ -1,17 +1,15 @@
 <template>
   <div>
     <!-- 工具条 -->
-    <el-card class="box-card" v-if="!Detail">
+    <el-card class="box-card" v-if="!detail">
       <el-form :inline="true" :model="form">
         <!-- inline行内的表单域;model表单数据对象 -->
         <el-row>
-          <!-- <el-col class="Title"> -->
           <span class="TopTitle">签约城市排名检索</span>
-          <!-- </el-col> -->
         </el-row>
         <el-row class="selectBoxs">
           <!-- 教育类别 -->
-          <el-col :span="5">
+          <el-col :span="4">
             <el-form-item>
               <!-- v-model实现双向绑定，select选择框里面的数据绑定search数组里对应的对象 -->
               <el-select v-model="search.educationYon" placeholder="教育类别" value-key="value">
@@ -24,9 +22,8 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4"></el-col>
           <!-- 年份 -->
-          <el-col :span="5">
+          <el-col :span="4">
             <el-form-item>
               <el-select v-model="search.year" placeholder="年份" value-key="value">
                 <el-option
@@ -39,7 +36,7 @@
             </el-form-item>
           </el-col>
           <!-- 城市分级 -->
-          <el-col :span="5">
+          <!-- <el-col :span="5">
             <el-form-item>
               <el-select v-model="search.signWeight" placeholder="城市分级" value-key="value">
                 <el-option
@@ -50,7 +47,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col>-->
           <el-col :span="3">
             <el-button
               type="primary"
@@ -63,8 +60,9 @@
         </el-row>
       </el-form>
     </el-card>
+
     <!-- 签约城市列表 -->
-    <el-card class="box-card" v-if="!Detail">
+    <el-card class="box-card" v-if="!detail">
       <el-table
         class="Table_signcity"
         :data="citySign.slice((currentPage-1)*pagesize,currentPage*pagesize)"
@@ -73,7 +71,12 @@
       >
         <el-table-column type="index" label="序号" width="90px"></el-table-column>
         <el-table-column prop="cityYear" label="年份"></el-table-column>
-        <el-table-column prop="educationYon" label="类型"></el-table-column>
+        <el-table-column label="类型">
+          <template slot-scope="scope">
+            <span v-if="scope.row.educationYon==1">教育类</span>
+            <span v-if="scope.row.educationYon==2">非教育类</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="cityName" label="城市"></el-table-column>
         <el-table-column prop="province" label="省份"></el-table-column>
         <el-table-column prop="cityUnit" label="签约单位"></el-table-column>
@@ -85,7 +88,7 @@
         <!-- 查看详细信息 -->
         <el-table-column prop="details" label="详细信息">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="detialInfor(scope); Detail=true">查看</el-button>
+            <el-button type="text" size="small" @click="detialInfor(scope); detail=true">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -100,10 +103,9 @@
     </el-card>
 
     <!-- 对话框/v-if实现查看详情功能 -->
-    <el-card class="box-card" v-if="Detail">
+    <el-card class="box-card" v-if="detail">
       <span class="TopTitle">城市详细信息</span>
-    </el-card>
-    <el-card class="box-card" v-if="Detail">
+      <hr>
       <el-row class="detailRow">
         <!-- 前端取出查看行的城市名 -->
         <el-col :span="4">
@@ -122,7 +124,7 @@
       </el-row>
     </el-card>
     <!-- 详细页面单位列表 -->
-    <el-card class="box-card" v-if="Detail">
+    <el-card class="box-card" v-if="detail">
       <el-form :inline="true" :model="form">
         <el-row>
           <el-col :span="3">
@@ -166,9 +168,7 @@
           </el-col>-->
         </el-row>
       </el-form>
-    </el-card>
-    <!-- 详细信息列表 -->
-    <el-card class="box-card" v-if="Detail">
+      <hr>
       <el-table
         class="Table"
         :data="DetailTable.slice((currentPage2-1)*pagesize,currentPage2*pagesize)"
@@ -207,15 +207,14 @@ export default {
       this.listLoading = true;
       let searchType = "educationYon=" + this.search.educationYon;
       let searchYear = "cityYear=" + this.search.year;
-      let searchsignWeight = "signValue=" + this.search.signWeight;
+      // let searchsignWeight = "signValue=" + this.search.signWeight;
       // 最多128个字符
       let searchUrl =
-        this.backendUrl+"/city/queryCityByCondition?" +
+        this.backendUrl +
+        "/city/queryCityByCondition?" +
         searchType +
         "&" +
         searchYear +
-        "&" +
-        searchsignWeight +
         "&" +
         "queryType=sign";
       this.$ajax({
@@ -290,8 +289,7 @@ export default {
       this.$ajax({
         method: "post",
         url:
-          self.backendUrl+"/city/cityDetails?cityName=" +
-          self.selectedName,
+          self.backendUrl + "/city/cityDetails?cityName=" + self.selectedName,
         dataType: "json",
         // 跨域
         crossDomain: true,
@@ -326,7 +324,7 @@ export default {
       // 点击查看获取到该行的城市名
       selectedName: "",
       // 详细信息设置，初始不可见
-      Detail: false,
+      detail: false,
       listLoading: true,
       //分页设置，当前页数为1，每页装的元组为10，元组总数目初始为0
       currentPage: 1,
@@ -339,6 +337,10 @@ export default {
       // 搜索表单数据时option
       form: {
         educationYon: [
+          {
+            value: "0",
+            label: "全部类别"
+          },
           {
             value: "1",
             label: "教育类"
@@ -383,9 +385,9 @@ export default {
       },
       // select双向绑定的数组对象
       search: {
-        educationYon: "",
-        year: "",
-        signWeight: ""
+        educationYon: "0",
+        year: "2019"
+        // signWeight: "E"
       },
       // -------------------------详细页面部分---------------------------------
       // 详细信息表格
@@ -435,7 +437,7 @@ export default {
     this.listLoading = true;
     this.$ajax({
       method: "post",
-      url: this.backendUrl+"/city/citySign?educationYon=1",
+      url: this.backendUrl + "/city/citySign?year=2019&educationYon=1",
       dataType: "json",
       // 跨域
       crossDomain: true,
@@ -464,7 +466,6 @@ export default {
 /* card设置 */
 .box-card {
   width: 100%;
-  border-radius: 10px;
   /* padding-left: 1%; */
 }
 /* 标题 */
